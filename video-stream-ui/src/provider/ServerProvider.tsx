@@ -48,7 +48,7 @@ export const ServerProvider: React.FC<{
     }
 
     const loadChannels = async () => {
-        const channelResponse = await fetch(`http://${serverIp}:${serverPort}/stat`);
+        const channelResponse = await fetch(`http://${serverIp}:${serverPort}/stat/stat`);
         if (!channelResponse.ok) {
             addError("Error in channel response.")
             return;
