@@ -29,17 +29,6 @@ export const Main = () => {
                     <Stack>
 
                     </Stack>
-                    <Stack>
-                        <Switch.Root variant={"raised"} onChange={val => {
-                            console.log(val.target);
-                        }}>
-                            <Switch.HiddenInput />
-                            <Switch.Control />
-                            <Switch.Label >
-                                CRT
-                            </Switch.Label>
-                        </Switch.Root>
-                    </Stack>
                 </Flex>
             </div>
         )
