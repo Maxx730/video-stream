@@ -19,7 +19,7 @@ export interface ServerContext {
 };
 
 const serverContextDefault = {
-    serverIp: "localhost",
+    serverIp: "video.clam-tube.com",
     serverPort: "8080",
     channels: [],
     currentChannel: "max_password",
