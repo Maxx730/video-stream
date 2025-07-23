@@ -48,7 +48,7 @@ export const ServerProvider: React.FC<{
     }
 
     const loadChannels = async () => {
-        const channelResponse = await fetch(`https://${serverIp}:${serverPort}/stat`);
+        const channelResponse = await fetch(`https://${serverIp}/stat`);
         if (!channelResponse.ok) {
             addError("Error in channel response.")
             return;
@@ -73,7 +73,7 @@ export const ServerProvider: React.FC<{
     }
 
     const getChannelURL = () => {
-        return `http://${serverIp}:${serverPort}/hls/${currentChannel}.m3u8`
+        return `https://${serverIp}:${serverPort}/hls/${currentChannel}.m3u8`
     }
 
     useEffect(() => {
