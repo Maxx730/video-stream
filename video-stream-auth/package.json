@@ -1,0 +1,16 @@
+{
+  "name": "video-stream-auth",
+  "version": "1.0.0",
+  "description": "auth service for video stream",
+  "license": "ISC",
+  "author": "John M Kinghorn",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2"
+  }
+}

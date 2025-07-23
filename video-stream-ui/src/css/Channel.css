@@ -1,0 +1,6 @@
+.channel-frame {
+    width: 800px;
+    height: 600px;
+    border: solid 1px black;
+    padding: 24px;
+}

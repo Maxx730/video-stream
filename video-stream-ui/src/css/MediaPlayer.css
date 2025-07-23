@@ -1,0 +1,6 @@
+.player-frame {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+    background-color: black;
+}

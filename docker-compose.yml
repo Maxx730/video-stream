@@ -1,0 +1,22 @@
+services:
+  rtmp:
+    image: alfg/nginx-rtmp
+    container_name: rtmp
+    ports:
+      - "1935:1935"
+      - "8080:8080"
+    volumes:
+      - ./video-stream-rtmp/nginx.conf:/app/nginx.conf:ro
+    command: ["nginx", "-g", "daemon off;", "-c", "/app/nginx.conf"]
+
+  auth:
+    build: ./video-stream-auth
+    container_name: auth
+    ports:
+      - "2599:2599"
+
+  ui:
+    build: ./video-stream-ui
+    container_name: ui
+    ports:
+    - "80:80"

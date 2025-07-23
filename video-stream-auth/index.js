@@ -1,0 +1,31 @@
+const express = require('express');
+const jwt = require('jsonwebtoken');
+const app = express();
+const fs = require('fs');
+const path = require('path');
+
+app.use(express.urlencoded({ extended: true }));
+
+app.post('/auth', (req, res) => {
+  console.log("working")
+  const { username, password } = req.body;
+  if (readAccessFile(username, password)) {
+    res.status(200).send('GRANTED');
+  } else {
+    res.status(403).send('DENIED');
+  }
+});
+
+app.listen(2559, () => {});
+
+function readAccessFile(username, password) {
+  try {
+    const absolutePath = path.resolve("./access.json");
+    const data = fs.readFileSync(absolutePath, 'utf-8');
+    const access = JSON.parse(data);
+    return Object.keys(access).indexOf(username) > -1 && access[username] === password;
+  } catch (error) {
+    console.error('Error reading JSON file:', error);
+    return false;
+  }
+}
