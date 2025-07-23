@@ -7,9 +7,9 @@ const path = require('path');
 app.use(express.urlencoded({ extended: true }));
 
 app.post('/auth', (req, res) => {
-  console.log("working")
-  const { username, password } = req.body;
-  if (readAccessFile(username, password)) {
+  const { name } = req.body;
+  const creds = name.split("_")
+  if (creds.length > 1 && readAccessFile(creds[0], creds[1])) {
     res.status(200).send('GRANTED');
   } else {
     res.status(403).send('DENIED');

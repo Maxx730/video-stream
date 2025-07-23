@@ -1,8 +1,6 @@
 import { Provider } from '@/components/ui/provider';
-import { ServerProvider } from './provider/ServerProvider';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
-import { Main } from './layouts/Main';
 import { Player } from './pages/Player';
 
 import { Token } from './pages/Token';

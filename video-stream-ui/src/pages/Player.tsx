@@ -1,7 +1,12 @@
+import { ServerProvider } from "@/provider/ServerProvider";
+import { Main } from "../layouts/Main";
+
 export const Player = () => {
     return (
         <div>
-            PLAYER
+            <ServerProvider>
+                <Main/>
+            </ServerProvider>
         </div>
     )
 }

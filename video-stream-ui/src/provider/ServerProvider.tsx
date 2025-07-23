@@ -19,10 +19,10 @@ export interface ServerContext {
 };
 
 const serverContextDefault = {
-    serverIp: "161.35.13.97",
+    serverIp: "localhost",
     serverPort: "8080",
     channels: [],
-    currentChannel: "test",
+    currentChannel: "max_password",
     errors: [],
     loading: true
 };
@@ -73,7 +73,7 @@ export const ServerProvider: React.FC<{
     }
 
     const getChannelURL = () => {
-        return `http://${serverIp}:${serverPort}/hls/test.m3u8`
+        return `http://${serverIp}:${serverPort}/hls/${currentChannel}.m3u8`
     }
 
     useEffect(() => {
