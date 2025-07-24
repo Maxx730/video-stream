@@ -73,7 +73,7 @@ export const ServerProvider: React.FC<{
     }
 
     const getChannelURL = () => {
-        return `https://${serverIp}:${serverPort}/hls/${currentChannel}.m3u8`
+        return `https://${serverIp}/hls/${currentChannel}.m3u8`
     }
 
     useEffect(() => {
