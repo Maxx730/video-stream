@@ -48,9 +48,7 @@ export const ServerProvider: React.FC<{
     }
 
     const loadChannels = async () => {
-        const channelResponse = await fetch(`https://${serverIp}/stat`, {
-            redirect: "follow"
-        });
+        const channelResponse = await fetch(`https://${serverIp}/stat`);
         if (!channelResponse.ok) {
             addError("Error in channel response.")
             return;
