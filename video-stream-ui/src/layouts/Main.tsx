@@ -10,7 +10,7 @@ import '../css/Main.css';
 const screenSizes = ["Small", "Normal", "Large"];
 
 export const Main = () => {
-    const { getChannelURL } = useContext(serverContextInstance);
+    const { getChannelURL, currentChannel } = useContext(serverContextInstance);
     const [effectState, setEffectState] = useState<string>("NONE");
     const [screenSize, setScreenSize] = useState<string>(screenSizes[1])
 
@@ -45,6 +45,7 @@ export const Main = () => {
             width: getSizeValue(screenSize)
         }}>
             <Stack>
+                {JSON.stringify(currentChannel)}
                 {renderPlayer()}
                 {renderHeader()}
             </Stack>

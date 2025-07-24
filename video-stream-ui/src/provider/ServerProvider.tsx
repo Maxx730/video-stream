@@ -19,7 +19,7 @@ export interface ServerContext {
 };
 
 const serverContextDefault = {
-    serverIp: "video.clam-tube.com",
+    serverIp: import.meta.env.DEV ? "localhost:8080" : "video.clam-tube.com",
     serverPort: "8080",
     channels: [],
     currentChannel: "max_password",
@@ -48,7 +48,9 @@ export const ServerProvider: React.FC<{
     }
 
     const loadChannels = async () => {
-        const channelResponse = await fetch(`https://${serverIp}/stat`);
+        const channelResponse = await fetch(`https://${serverIp}/stat`, {
+            redirect: "follow"
+        });
         if (!channelResponse.ok) {
             addError("Error in channel response.")
             return;
