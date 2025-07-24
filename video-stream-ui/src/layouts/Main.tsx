@@ -31,7 +31,7 @@ export const Main = () => {
       
                     </div>
                     <div>
-                        <NumberInput.Root defaultValue="3" min={1} unstyled spinOnPress={false}>
+                        <NumberInput.Root defaultValue="1" min={1} unstyled spinOnPress={false}>
                             <HStack gap="2">
                                 <NumberInput.DecrementTrigger asChild>
                                 <IconButton variant="outline" size="sm">
@@ -63,7 +63,6 @@ export const Main = () => {
             width: getSizeValue(screenSize)
         }}>
             <Stack>
-                {JSON.stringify(currentChannel)}
                 {renderPlayer()}
                 {renderHeader()}
             </Stack>

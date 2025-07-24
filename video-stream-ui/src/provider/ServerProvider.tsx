@@ -22,7 +22,7 @@ const serverContextDefault = {
     serverIp: import.meta.env.DEV ? "localhost:8080" : "video.clam-tube.com",
     serverPort: "8080",
     channels: [],
-    currentChannel: "max_password",
+    currentChannel: "connor_password",
     errors: [],
     loading: true
 };
