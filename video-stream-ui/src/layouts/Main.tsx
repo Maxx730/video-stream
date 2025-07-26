@@ -1,21 +1,29 @@
-import { Heading, Stack, HStack, SegmentGroup, Switch, Flex, NumberInput, IconButton } from "@chakra-ui/react";
+import { Stack, SegmentGroup, Flex } from "@chakra-ui/react";
 import { useContext, useState } from "react";
 import { serverContextInstance } from "@/provider/ServerProvider";
 import { getSizeValue } from "@/util/values";
-
+import { ViewCount } from "@/components/ViewCount";
+import { ChannelControl } from "@/components/ChannelControl";
 import { MediaPlayer } from '../components/MediaPlayer';
 
 import '../css/Main.css';
-import { LuMinus, LuPlus } from "react-icons/lu";
+import { NoChannels } from "@/components/NoChannels";
 
 const screenSizes = ["Small", "Normal", "Large"];
 
 export const Main = () => {
-    const { getChannelURL, currentChannel } = useContext(serverContextInstance);
+    const { getChannelURL, channels, currentChannel, setCurrentChannel } = useContext(serverContextInstance);
     const [effectState, setEffectState] = useState<string>("NONE");
     const [screenSize, setScreenSize] = useState<string>(screenSizes[1])
 
-    const renderHeader = () => {
+    const renderTop = () => {
+        return (
+            <Flex>
+                
+            </Flex>
+        )
+    }
+    const renderControls = () => {
         return (
             <div className="header-frame">
                 <Flex justify={"space-between"}>
@@ -28,44 +36,39 @@ export const Main = () => {
                         </SegmentGroup.Root>
                     </div>
                     <div>
-      
+
                     </div>
-                    <div>
-                        <NumberInput.Root defaultValue="1" min={1} unstyled spinOnPress={false}>
-                            <HStack gap="2">
-                                <NumberInput.DecrementTrigger asChild>
-                                <IconButton variant="outline" size="sm">
-                                    <LuMinus />
-                                </IconButton>
-                                </NumberInput.DecrementTrigger>
-                                <NumberInput.ValueText textAlign="center" fontSize="lg" minW="3ch" />
-                                <NumberInput.IncrementTrigger asChild>
-                                <IconButton variant="outline" size="sm">
-                                    <LuPlus />
-                                </IconButton>
-                                </NumberInput.IncrementTrigger>
-                            </HStack>
-                        </NumberInput.Root>
-                    </div>
+                    <Stack>
+                        {
+                            channels && channels.length > 0 && renderChannelControls()
+                        }
+                    </Stack>
                 </Flex>
             </div>
         )
     }
     const renderPlayer = () => {
+        return <MediaPlayer effect={effectState} size={screenSize} url={getChannelURL()}/>;
+    }
+    const renderChannelControls = () => {
         return (
-            <div>
-                <MediaPlayer effect={effectState} size={screenSize} url={getChannelURL()}/>
-            </div>
+            <>
+                <ChannelControl onChannelChange={setCurrentChannel} maxChannel={channels.length || 1}/>
+                <ViewCount count={channels[currentChannel].viewerCount}/>
+            </>
         )
     }
     return (
         <div className="main-frame" style={{
             width: getSizeValue(screenSize)
         }}>
+            {channels.length > 0 ? 
             <Stack>
+                {renderTop()}
                 {renderPlayer()}
-                {renderHeader()}
-            </Stack>
+                {renderControls()}
+            </Stack> :
+            <NoChannels/>}
         </div>
     )
 }

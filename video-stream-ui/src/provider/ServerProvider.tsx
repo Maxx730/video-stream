@@ -13,7 +13,7 @@ export interface ServerContext {
     serverIp: string,
     serverPort: string,
     channels: Array<Channel>,
-    currentChannel: string,
+    currentChannel: number,
     errors: Array<Error>,
     loading: boolean
 };
@@ -22,11 +22,12 @@ const serverContextDefault = {
     serverIp: import.meta.env.DEV ? "localhost:8080" : "video.clam-tube.com",
     serverPort: "8080",
     channels: [],
-    currentChannel: "connor_password",
+    currentChannel: 0,
     errors: [],
     loading: true
 };
 export const serverContextInstance = createContext<any>(serverContextDefault);
+export const CHANNEL_UPDATE_DELTA: number = 30000;
 
 export const ServerProvider: React.FC<{
     children: React.ReactNode
@@ -35,7 +36,7 @@ export const ServerProvider: React.FC<{
     const [serverIp] = useState(serverContextDefault.serverIp);
     const [serverPort] = useState(serverContextDefault.serverPort);
     const [channels, setChannels] = useState<Array<Channel>>(serverContextDefault.channels);
-    const [currentChannel, setCurrentChannel] = useState(serverContextDefault.currentChannel);
+    const [currentChannel, setCurrentChannel] = useState<number>(serverContextDefault.currentChannel);
     const [errors, setErrors] = useState(serverContextDefault.errors);
     const [loading, setLoading] = useState(serverContextDefault.loading);
 
@@ -48,13 +49,23 @@ export const ServerProvider: React.FC<{
     }
 
     const loadChannels = async () => {
-        const channelResponse = await fetch(`https://${serverIp}/stat`);
-        if (!channelResponse.ok) {
-            addError("Error in channel response.")
-            return;
+        console.log("Loading Channels...");
+        if (import.meta.env.DEV) {
+            setChannels([
+                {
+                    name: "",
+                    viewerCount: 5
+                }
+            ])
+        } else {
+            const channelResponse = await fetch(`https://${serverIp}/stat`);
+            if (!channelResponse.ok) {
+                addError("Error in channel response.")
+                return;
+            }
+            const data: string = await channelResponse.text();
+            setChannels(parseChannels(data))
         }
-        const data: string = await channelResponse.text();
-        setChannels(parseChannels(data))
     }
 
     const parseChannels = (data: string): Array<Channel> => {
@@ -78,6 +89,11 @@ export const ServerProvider: React.FC<{
 
     useEffect(() => {
         loadChannels();
+
+        const interval = setInterval(loadChannels, CHANNEL_UPDATE_DELTA);
+        return () => {
+            clearInterval(interval);
+        }
     }, []);
 
     useEffect(() => {
@@ -92,7 +108,10 @@ export const ServerProvider: React.FC<{
             currentChannel,
             errors,
             loading,
-            getChannelURL
+            getChannelURL,
+            setCurrentChannel: (channel: number) => {
+                setCurrentChannel(channel - 1);
+            }
         }}>
             {children}
         </serverContextInstance.Provider>
