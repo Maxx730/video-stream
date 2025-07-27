@@ -20,7 +20,7 @@ export interface ServerContext {
 };
 
 const serverContextDefault = {
-    serverIp: isDev() ? "dev.clam-tube.com" : "video.clam-tube.com",
+    serverIp: "video.clam-tube.com",
     serverPort: "8080",
     channels: [],
     currentChannel: 0,
