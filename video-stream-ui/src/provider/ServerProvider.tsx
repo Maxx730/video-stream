@@ -20,7 +20,7 @@ export interface ServerContext {
 };
 
 const serverContextDefault = {
-    serverIp: "dev.clam-tube.com",
+    serverIp: "video.clam-tube.com",
     serverPort: "8080",
     channels: [],
     currentChannel: 0,
@@ -33,6 +33,7 @@ export const CHANNEL_UPDATE_DELTA: number = 30000;
 export const ServerProvider: React.FC<{
     children: React.ReactNode
 }> = ({children}) => {
+    console.log(window.location)
     const [serverIp] = useState(serverContextDefault.serverIp);
     const [serverPort] = useState(serverContextDefault.serverPort);
     const [channels, setChannels] = useState<Array<Channel>>(serverContextDefault.channels);
