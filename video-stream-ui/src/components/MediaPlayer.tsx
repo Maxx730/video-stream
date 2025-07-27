@@ -14,7 +14,7 @@ export interface PlayerProps {
 
 export const MediaPlayer = ({ url, effect = 'NONE', size = 'Normal' }: PlayerProps) => {
     const [volume, setVolume] = useState(0.5);
-    const [muted, setMuted] = useState(false);
+    const [muted, setMuted] = useState(true);
 
     const renderVolumeControl = () => {
         return (
@@ -69,7 +69,7 @@ export const MediaPlayer = ({ url, effect = 'NONE', size = 'Normal' }: PlayerPro
             <div className="player-frame" style={{
                 width: getSizeValue(size)
             }}>
-                <ReactPlayer volume={volume} muted={muted} controls={false} height={'auto'} width={getSizeValue(size)} src={url}/>
+                <ReactPlayer volume={volume} muted={muted} controls={false} height={'auto'} width={getSizeValue(size)} src={url} playing={true}/>
             </div>
             <div className="control-frame">
                 {renderControls()}
