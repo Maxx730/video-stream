@@ -1,5 +1,4 @@
 import { createContext, useState, useEffect } from "react";
-import { isDev } from "@/util/utils";
 
 export interface Channel {
     name: string,
@@ -20,7 +19,7 @@ export interface ServerContext {
 };
 
 const serverContextDefault = {
-    serverIp: "video.clam-tube.com",
+    serverIp: "dev.clam-tube.com",
     serverPort: "8080",
     channels: [],
     currentChannel: 0,
@@ -33,7 +32,6 @@ export const CHANNEL_UPDATE_DELTA: number = 30000;
 export const ServerProvider: React.FC<{
     children: React.ReactNode
 }> = ({children}) => {
-    console.log(window.location)
     const [serverIp] = useState(serverContextDefault.serverIp);
     const [serverPort] = useState(serverContextDefault.serverPort);
     const [channels, setChannels] = useState<Array<Channel>>(serverContextDefault.channels);
@@ -51,22 +49,13 @@ export const ServerProvider: React.FC<{
 
     const loadChannels = async () => {
         console.log("Loading Channels...");
-        if (import.meta.env.DEV) {
-            setChannels([
-                {
-                    name: "",
-                    viewerCount: 5
-                }
-            ])
-        } else {
-            const channelResponse = await fetch(`https://${serverIp}/stat`);
-            if (!channelResponse.ok) {
-                addError("Error in channel response.")
-                return;
-            }
-            const data: string = await channelResponse.text();
-            setChannels(parseChannels(data))
+        const channelResponse = await fetch(`https://${serverIp}/stat/`);
+        if (!channelResponse.ok) {
+            addError("Error in channel response.")
+            return;
         }
+        const data: string = await channelResponse.text();
+        setChannels(parseChannels(data))
     }
 
     const parseChannels = (data: string): Array<Channel> => {

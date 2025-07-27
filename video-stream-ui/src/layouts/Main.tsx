@@ -53,7 +53,7 @@ export const Main = () => {
     const renderChannelControls = () => {
         return (
             <>
-                <ViewCount count={channels[currentChannel].viewerCount}/>
+
             </>
         )
     }
