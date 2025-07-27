@@ -33,7 +33,6 @@ export const CHANNEL_UPDATE_DELTA: number = 30000;
 export const ServerProvider: React.FC<{
     children: React.ReactNode
 }> = ({children}) => {
-
     const [serverIp] = useState(serverContextDefault.serverIp);
     const [serverPort] = useState(serverContextDefault.serverPort);
     const [channels, setChannels] = useState<Array<Channel>>(serverContextDefault.channels);

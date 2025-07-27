@@ -4,3 +4,18 @@
     border-radius: 12px;
     background-color: black;
 }
+
+.control-frame {
+    padding: 12px;
+    .control-section {
+        flex-grow: 1;
+        .volume-control-frame {
+            gap: 12px;
+            display: flex;
+            .slider {
+                flex-grow: 1;
+                padding-top: 2px;
+            }
+        }
+    }
+}
