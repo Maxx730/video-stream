@@ -53,7 +53,6 @@ export const Main = () => {
     const renderChannelControls = () => {
         return (
             <>
-                <ChannelControl onChannelChange={setCurrentChannel} maxChannel={channels.length || 1}/>
                 <ViewCount count={channels[currentChannel].viewerCount}/>
             </>
         )
