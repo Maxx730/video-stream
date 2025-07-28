@@ -4,6 +4,8 @@ const app = express();
 const fs = require('fs');
 const path = require('path');
 
+const PORT = 2599;
+
 app.use(express.urlencoded({ extended: true }));
 
 app.post('/auth', (req, res) => {
@@ -16,7 +18,7 @@ app.post('/auth', (req, res) => {
   }
 });
 
-app.listen(2599, () => {});
+app.listen(PORT, () => {});
 
 function readAccessFile(username, password) {
   try {

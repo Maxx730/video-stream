@@ -15,6 +15,12 @@ services:
     ports:
       - "2599:2599"
 
+  viewers:
+    build: ./video-stream-viewers
+    container_name: viewers
+    ports:
+      - "2276:2276"
+
   ui:
     build: ./video-stream-ui
     container_name: ui

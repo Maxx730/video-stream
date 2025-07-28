@@ -12,14 +12,14 @@ import { NoChannels } from "@/components/NoChannels";
 const screenSizes = ["Small", "Normal", "Large"];
 
 export const Main = () => {
-    const { getChannelURL, channels, currentChannel, setCurrentChannel } = useContext(serverContextInstance);
+    const { getChannelURL, channels, viewCount } = useContext(serverContextInstance);
     const [effectState, setEffectState] = useState<string>("NONE");
     const [screenSize, setScreenSize] = useState<string>(screenSizes[1])
 
     const renderTop = () => {
         return (
             <Flex>
-                
+                <ViewCount count={viewCount}/>
             </Flex>
         )
     }

@@ -19,7 +19,7 @@ export interface ServerContext {
 };
 
 const serverContextDefault = {
-    serverIp: "video.clam-tube.com",
+    serverIp: "dev.clam-tube.com",
     serverPort: "8080",
     channels: [],
     currentChannel: 0,
@@ -38,6 +38,7 @@ export const ServerProvider: React.FC<{
     const [currentChannel, setCurrentChannel] = useState<number>(serverContextDefault.currentChannel);
     const [errors, setErrors] = useState(serverContextDefault.errors);
     const [loading, setLoading] = useState(serverContextDefault.loading);
+    const [viewCount, setViewCount] = useState(0);
 
     const addError = (error: string) => {
         const clonedErrors = JSON.parse(JSON.stringify(errors));
@@ -77,17 +78,24 @@ export const ServerProvider: React.FC<{
         return `https://${serverIp}/hls/${channels[currentChannel].name}.m3u8`
     }
 
+    const getViewCount = async () => {
+        const data = await fetch(`http://${serverIp}:2276/viewers`);
+        if (data.ok) {
+            const json = await data.json();
+            setViewCount(json.viewerCount);
+        }
+    }
+
     useEffect(() => {
         loadChannels();
-
-        const interval = setInterval(loadChannels, CHANNEL_UPDATE_DELTA);
-        return () => {
-            clearInterval(interval);
-        }
     }, []);
 
     useEffect(() => {
         setLoading(false);
+        const interval = setInterval(getViewCount, 5000);
+        return () => {
+            clearInterval(interval);
+        }
     }, [channels]);
 
     return (
@@ -101,7 +109,8 @@ export const ServerProvider: React.FC<{
             getChannelURL,
             setCurrentChannel: (channel: number) => {
                 setCurrentChannel(channel - 1);
-            }
+            },
+            viewCount
         }}>
             {children}
         </serverContextInstance.Provider>
