@@ -4,6 +4,8 @@ import { getSizeValue } from '@/util/values';
 import { useState } from 'react';
 import { Flex, IconButton, Slider } from '@chakra-ui/react';
 import { FaPause, FaPlay, FaVolumeHigh, FaVolumeXmark } from 'react-icons/fa6';
+import { RiFullscreenLine } from "react-icons/ri";
+
 
 export interface PlayerProps {
     url: string,
@@ -12,14 +14,14 @@ export interface PlayerProps {
 }
 
 export const MediaPlayer = ({ url, effect = 'NONE', size = 'Normal' }: PlayerProps) => {
-    const [volume, setVolume] = useState(0.5);
+    const [volume, setVolume] = useState(1.0);
     const [muted, setMuted] = useState(true);
     const [playing, setPlaying] = useState(true);
 
     const renderPlayButton = () => {
         return (
             <div>
-                <IconButton onClick={() => setPlaying(!playing)} variant={'solid'}>
+                <IconButton onClick={() => setPlaying(!playing)} variant={playing ? 'subtle' : 'solid'}>
                     {playing ? <FaPause /> : <FaPlay />}
                 </IconButton>
             </div>
@@ -31,43 +33,54 @@ export const MediaPlayer = ({ url, effect = 'NONE', size = 'Normal' }: PlayerPro
             <div className='volume-control-frame'>
                 <IconButton onClick={() => {
                     setMuted(!muted);
-                }} variant={'subtle'} size={'xs'} aria-label="Search database">
+                }} variant={'subtle'} aria-label="Search database">
                     {volume > 0.0 && !muted ? <FaVolumeHigh /> : <FaVolumeXmark />}
                 </IconButton>
-                <div className='slider'>
-                    <Slider.Root disabled={muted} onValueChange={details => {
-                        const val = details.value[0];
-                        setVolume(val);
-                    }} max={1.0} min={0.0} step={0.02}>
-                        <Slider.Control>
-                            <Slider.Track>
-                            <Slider.Range />
-                            </Slider.Track>
-                            <Slider.Thumb>
-                                <Slider.DraggingIndicator />
-                                <Slider.HiddenInput />
-                            </Slider.Thumb>
-                                <Slider.MarkerGroup>
-                            <Slider.Marker />
-                            </Slider.MarkerGroup>
-                        </Slider.Control>
-                    </Slider.Root>
-                </div>
             </div>
+        )
+    }
+
+    const renderSlider = () => {
+        return (
+            <div className='slider'>
+                <Slider.Root disabled={muted} onValueChange={details => {
+                    const val = details.value[0];
+                    setVolume(val);
+                }} max={1.0} min={0.0} step={0.02}>
+                    <Slider.Control>
+                        <Slider.Track>
+                        <Slider.Range />
+                        </Slider.Track>
+                        <Slider.Thumb>
+                            <Slider.DraggingIndicator />
+                            <Slider.HiddenInput />
+                        </Slider.Thumb>
+                            <Slider.MarkerGroup>
+                        <Slider.Marker />
+                        </Slider.MarkerGroup>
+                    </Slider.Control>
+                </Slider.Root>
+            </div>
+        );
+    }
+
+    const renderFullscreenButton = () => {
+        return (
+            <IconButton onClick={() => {
+                setMuted(!muted);
+            }} variant={'subtle'} aria-label="Search database">
+                <RiFullscreenLine/>
+            </IconButton>  
         )
     }
 
     const renderControls = () => {
         return (
             <Flex gap={6}>
-                <div className='control-section collapse'>
-                    {renderPlayButton()}
-                </div>
                 <div className='control-section'>
-                    
-                </div>
-                <div className='control-section center-vertical'>
+                    {renderPlayButton()}
                     {renderVolumeControl()}
+                    {renderFullscreenButton()}
                 </div>
             </Flex>
         )

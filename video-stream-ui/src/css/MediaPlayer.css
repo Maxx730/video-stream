@@ -9,6 +9,9 @@
     padding: 12px;
     .control-section {
         flex-grow: 1;
+        display: flex;
+        gap: 8px;
+        flex-direction: row;
         .volume-control-frame {
             gap: 12px;
             display: flex;

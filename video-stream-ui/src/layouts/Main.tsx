@@ -9,7 +9,7 @@ import { MediaPlayer } from '../components/MediaPlayer';
 import '../css/Main.css';
 import { NoChannels } from "@/components/NoChannels";
 
-const screenSizes = ["Small", "Normal", "Large"];
+const screenSizes = ["Small", "Normal", "Large", "Huge"];
 
 export const Main = () => {
     const { getChannelURL, channels, viewCount } = useContext(serverContextInstance);
@@ -18,9 +18,22 @@ export const Main = () => {
 
     const renderTop = () => {
         return (
-            <Flex>
-                <ViewCount count={viewCount}/>
-            </Flex>
+            <div className="top-frame">
+                <div className="top-section">
+                    <ViewCount count={viewCount}/>
+                </div>
+                <div className="top-section center">
+                    <SegmentGroup.Root defaultValue={screenSize} onValueChange={details => {
+                        setScreenSize(details.value || "Normal");
+                    }}>
+                        <SegmentGroup.Indicator />
+                        <SegmentGroup.Items items={screenSizes} />
+                    </SegmentGroup.Root>
+                </div>
+                <div className="top-section">
+
+                </div>
+            </div>
         )
     }
     const renderControls = () => {
@@ -28,12 +41,7 @@ export const Main = () => {
             <div className="header-frame">
                 <Flex justify={"space-between"}>
                     <div>
-                        <SegmentGroup.Root defaultValue={screenSize} onValueChange={details => {
-                            setScreenSize(details.value || "Normal");
-                        }}>
-                            <SegmentGroup.Indicator />
-                            <SegmentGroup.Items items={screenSizes} />
-                        </SegmentGroup.Root>
+                        
                     </div>
                     <div>
 

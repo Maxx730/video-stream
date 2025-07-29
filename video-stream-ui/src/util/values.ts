@@ -6,6 +6,8 @@ export const getSizeValue = (size: string = 'Normal') => {
             return '854px'
         case 'Large':
             return '1138px'
+        case 'Huge':
+            return '1280px'
         default:
             return '1138px'
     }

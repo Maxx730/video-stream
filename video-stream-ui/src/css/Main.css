@@ -21,3 +21,17 @@ body {
 .header-frame {
     padding: 0px 12px;
 }
+
+.top-frame {
+    display: flex;
+    flex-direction: row;
+    padding: 8px 0;
+}
+.top-section {
+    display: flex;
+    flex-grow: 1;
+}
+
+.top-section.center {
+    justify-content: center;
+}
