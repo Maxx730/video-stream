@@ -47,7 +47,7 @@ setInterval(() => {
 app.get('/debug', (req: Request, res: Response) => {
     res.json({
         viewers: connected,
-        viewCount: connected.length;
+        viewCount: connected.length
     });
 });
 app.listen(port, () => {});
