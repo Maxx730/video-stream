@@ -21,16 +21,18 @@ let connected: Array<Viewer> = [];
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({ origin: '*' }));
 app.get('/viewers', (req: Request<{}, {}, ViewerCount>, res: Response) => {
-    const ip: string = req.ip || '';
-    const findVal = (viewer: Viewer) => viewer.ip === ip;
-    if (connected.find(findVal)) {
-        const found = connected[connected.findIndex(findVal)];
-        found.lastPing = new Date();
-    } else {
-        connected.push({
-            ip,
-            lastPing: new Date()
-        });
+    const ip: string | undefined = req.headers['x-forwarded-for']?.toString().split(',')[0] || req.socket.remoteAddress;
+    if (ip) {
+        const findVal = (viewer: Viewer) => viewer.ip === ip;
+        if (connected.find(findVal)) {
+            const found = connected[connected.findIndex(findVal)];
+            found.lastPing = new Date();
+        } else {
+            connected.push({
+                ip,
+                lastPing: new Date()
+            });
+        }
     }
     res.json({
         viewerCount: connected.length
