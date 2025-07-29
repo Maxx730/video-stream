@@ -79,7 +79,7 @@ export const ServerProvider: React.FC<{
     }
 
     const getViewCount = async () => {
-        const data = await fetch(`https://${serverIp}:2276/viewers/`);
+        const data = await fetch(`https://${serverIp}/viewers/`);
         if (data.ok) {
             const json = await data.json();
             setViewCount(json.viewerCount);
