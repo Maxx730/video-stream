@@ -44,4 +44,10 @@ setInterval(() => {
         return minutes < pruneTimeoutMinutes;
     });
 }, pruneInterval);
+app.get('/debug', (req: Request, res: Response) => {
+    res.json({
+        viewers: connected,
+        viewCount: connected.length;
+    });
+});
 app.listen(port, () => {});
