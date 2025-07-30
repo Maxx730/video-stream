@@ -80,7 +80,6 @@ export const MediaPlayer = ({ url, effect = 'NONE', size = 'Normal' }: PlayerPro
                 <div className='control-section'>
                     {renderPlayButton()}
                     {renderVolumeControl()}
-                    {renderFullscreenButton()}
                 </div>
             </Flex>
         )
