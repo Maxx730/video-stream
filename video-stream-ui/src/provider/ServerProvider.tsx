@@ -1,8 +1,8 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useRef } from "react";
 
 export interface Channel {
     name: string,
-    viewerCount: number
+    url: string
 }
 
 export interface Error {
@@ -39,6 +39,7 @@ export const ServerProvider: React.FC<{
     const [errors, setErrors] = useState(serverContextDefault.errors);
     const [loading, setLoading] = useState(serverContextDefault.loading);
     const [viewCount, setViewCount] = useState(0);
+    const changeChannelTimer = useRef<NodeJS.Timeout | null>(null);
 
     const addError = (error: string) => {
         const clonedErrors = JSON.parse(JSON.stringify(errors));
@@ -68,8 +69,7 @@ export const ServerProvider: React.FC<{
 
         const streamList = Array.from(streams).map(stream => {
             const name = stream.getElementsByTagName('name')[0]?.textContent;
-            const viewers = stream.getElementsByTagName('nclients')[0]?.textContent;
-            return { name, viewerCount: parseInt(viewers || "0") } as Channel;
+            return { name, url: ``} as Channel;
         });
         return streamList;
     }
@@ -98,6 +98,9 @@ export const ServerProvider: React.FC<{
         }
     }, [channels]);
 
+    useEffect(() => {
+    }, [changeChannelTimer]);
+
     return (
         <serverContextInstance.Provider value={{
             serverIp,
@@ -108,7 +111,11 @@ export const ServerProvider: React.FC<{
             loading,
             getChannelURL,
             setCurrentChannel: (channel: number) => {
-                setCurrentChannel(channel - 1);
+                setLoading(true);
+                setCurrentChannel(channel);
+                changeChannelTimer.current = setTimeout(() => {
+                    setLoading(false);
+                }, 1000);
             },
             viewCount
         }}>

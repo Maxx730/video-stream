@@ -10,13 +10,13 @@ import { RiFullscreenLine } from "react-icons/ri";
 export interface PlayerProps {
     url: string,
     effect?: string,
-    size?: string
+    size?: string,
+    playing?: boolean
 }
 
-export const MediaPlayer = ({ url, effect = 'NONE', size = 'Normal' }: PlayerProps) => {
+export const MediaPlayer = ({ url, effect = 'NONE', size = 'Normal', playing = true }: PlayerProps) => {
     const [volume, setVolume] = useState(1.0);
     const [muted, setMuted] = useState(true);
-    const [playing, setPlaying] = useState(true);
 
     const renderPlayButton = () => {
         return (

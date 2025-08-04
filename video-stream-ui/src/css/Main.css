@@ -16,6 +16,22 @@ body {
     padding: 24px 0px;
     margin: 0 auto;
     height: 100%;
+    .main-contents {
+        display: flex;
+        gap: 18px;
+        .content-column {
+            width: 50%;
+            .busy-frame {
+                border: solid 1px #DEDEDE;
+                background-color: #EFEFEF;
+                border-radius: 12px;
+                display: flex;
+                min-height: 480px;
+                justify-content: center;
+                align-items: center;
+            }
+        }
+    }
 }
 
 .header-frame {

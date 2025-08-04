@@ -1,9 +1,9 @@
-import { Stack, SegmentGroup, Flex } from "@chakra-ui/react";
-import { useContext, useState } from "react";
+import { Stack, SegmentGroup, Flex, ProgressCircle, Text } from "@chakra-ui/react";
+import { useContext, useState, useEffect, useRef } from "react";
 import { serverContextInstance } from "@/provider/ServerProvider";
 import { getSizeValue } from "@/util/values";
 import { ViewCount } from "@/components/ViewCount";
-import { ChannelControl } from "@/components/ChannelControl";
+import { SideTabs } from "@/components/SideTabs";
 import { MediaPlayer } from '../components/MediaPlayer';
 
 import '../css/Main.css';
@@ -12,10 +12,13 @@ import { NoChannels } from "@/components/NoChannels";
 const screenSizes = ["Small", "Normal", "Large", "Huge"];
 
 export const Main = () => {
-    const { getChannelURL, channels, viewCount } = useContext(serverContextInstance);
+    const { getChannelURL, channels, viewCount, setCurrentChannel, loading } = useContext(serverContextInstance);
     const [effectState, setEffectState] = useState<string>("NONE");
-    const [screenSize, setScreenSize] = useState<string>(screenSizes[1])
+    const [screenSize, setScreenSize] = useState<string>(screenSizes[1]);
+    const changeRef = useRef<NodeJS.Timeout | null>(null);
+    const [playing, setPlaying] = useState(true);
 
+    // RENDER METHODS
     const renderTop = () => {
         return (
             <div className="top-frame">
@@ -56,7 +59,7 @@ export const Main = () => {
         )
     }
     const renderPlayer = () => {
-        return <MediaPlayer effect={effectState} size={screenSize} url={getChannelURL()}/>;
+        return <MediaPlayer playing={playing} effect={effectState} size={screenSize} url={getChannelURL()}/>;
     }
     const renderChannelControls = () => {
         return (
@@ -65,17 +68,73 @@ export const Main = () => {
             </>
         )
     }
-    return (
-        <div className="main-frame" style={{
-            width: getSizeValue(screenSize)
-        }}>
-            {channels.length > 0 ? 
+    const renderBusyScreen = () => {
+        return (
+            <div className="busy-frame">
+                <Stack align={'center'}>
+                    <ProgressCircle.Root value={null} size="sm">
+                        <ProgressCircle.Circle>
+                            <ProgressCircle.Track />
+                            <ProgressCircle.Range strokeLinecap={'round'} />
+                        </ProgressCircle.Circle>
+                    </ProgressCircle.Root>
+                    <Text>
+                        Loading...
+                    </Text>
+                </Stack>
+            </div>
+        )
+    }
+    const renderPlayerScreen = () => {
+        if (loading) {
+            return renderBusyScreen();
+        }
+        return (
             <Stack>
                 {renderTop()}
                 {renderPlayer()}
                 {renderControls()}
-            </Stack> :
-            <NoChannels/>}
+            </Stack>
+        );
+    }
+
+    // UTIL
+    const isBigScreen = () => {
+        return (screenSize === "Large" || screenSize === "Huge")
+    }
+
+    useEffect(() => {
+        return () => {
+            if (changeRef.current) {
+                clearTimeout(changeRef.current);
+            }
+        }
+    }, []);
+
+    useEffect(() => {
+
+    })
+
+    return (
+        <div className="main-frame">
+            <div className="main-contents">
+                <div className="content-column"  style={{
+                    width: getSizeValue(screenSize)
+                }}>
+                    {channels.length > 0 ? renderPlayerScreen() : <NoChannels/>}
+                </div>
+                {!isBigScreen() &&   
+                <div className="content-column" style={{
+                    width: '320px'
+                }}>
+                    <SideTabs onChannelSelected={channel => {
+                        setCurrentChannel(channel);
+                        changeRef.current = setTimeout(() => {
+                            
+                        }, 1000);
+                    }}/>
+                </div>}
+            </div>
         </div>
     )
 }

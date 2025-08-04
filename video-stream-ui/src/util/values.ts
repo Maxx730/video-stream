@@ -1,14 +1,14 @@
-export const getSizeValue = (size: string = 'Normal') => {
+export const getSizeValue = (size: string = 'Normal', add: number = 0) => {
     switch (size) {
         case 'Small':
-            return '640px'
+            return `${640 + add}px`;
         case 'Normal':
-            return '854px'
+            return `${864 + add}px`;
         case 'Large':
-            return '1138px'
+            return `${1138 + add}px`;
         case 'Huge':
-            return '1280px'
+            return `${1280 + add}px`;
         default:
-            return '1138px'
+            return `${864 + add}px`;
     }
 }
