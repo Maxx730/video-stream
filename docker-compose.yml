@@ -9,15 +9,9 @@ services:
       - ./video-stream-rtmp/nginx.conf:/app/nginx.conf:ro
     command: ["nginx", "-g", "daemon off;", "-c", "/app/nginx.conf"]
 
-  auth:
-    build: ./video-stream-auth
-    container_name: auth
-    ports:
-      - "2599:2599"
-
-  viewers:
-    build: ./video-stream-viewers
-    container_name: viewers
+  channels:
+    build: ./video-stream-channels
+    container_name: channels
     ports:
       - "2276:2276"
 
