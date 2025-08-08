@@ -99,7 +99,7 @@ export const Main = () => {
     }
     const renderContentScreen = () => {
         return (
-            <div>
+            <div className="main-content">
                 <div className="content-column"  style={{
                     width: getSizeValue(screenSize)
                 }}>

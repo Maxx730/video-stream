@@ -74,16 +74,17 @@ app.post('/init', (req: Request, res: Response) => {
         if (channelExists(key)) {
             res.sendStatus(403).end();
         } else {
+            const channelName = `channel_${channels.length}`;
             channels.push({
                 key,
                 title: title || `Channel ${channels.length}`,
                 desc,
                 viewers: [],
-                path: `${key}.m3u8`,
+                path: `${channelName}.m3u8`,
                 started: new Date()
             });
             logEvent(`STREAM STARTED: ${key}`);
-            res.setHeader('Location', `rtmp://rtmp/live/${key}`);
+            res.setHeader('Location', `rtmp://rtmp/live/${channelName}`);
             res.sendStatus(302);
         }
     } else {
