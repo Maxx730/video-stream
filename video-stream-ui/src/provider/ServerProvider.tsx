@@ -96,6 +96,7 @@ export const ServerProvider: React.FC<{
 
     useEffect(() => {
         loadChannels();
+        getChannels();
     }, []);
 
     useEffect(() => {
