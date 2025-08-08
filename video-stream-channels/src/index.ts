@@ -103,6 +103,7 @@ app.post('/done', (req: Request, res: Response) => {
     res.sendStatus(200);
 });
 app.get('/channels', (req: Request, res: Response) => {
+    logEvent('LOADING CHANNELS')
     res.json(channels);
 });
 app.get('/channel/:streamKey', (req: Request, res: Response) => {

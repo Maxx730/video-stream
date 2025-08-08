@@ -48,7 +48,15 @@ export const ServerProvider: React.FC<{
         });
         setErrors(clonedErrors);
     }
-
+    const getChannels = async () => {
+        const channelResponse = await fetch(`https://${serverIp}/channels`);
+        if (!channelResponse.ok) {
+            addError("Error in channel response.")
+            return;
+        }
+        const data: string = await channelResponse.text();
+        console.log(data);
+    }
     const loadChannels = async () => {
         console.log("Loading Channels...");
         const channelResponse = await fetch(`https://${serverIp}/stat/`);
