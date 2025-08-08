@@ -97,27 +97,9 @@ export const Main = () => {
             </Stack>
         );
     }
-
-    // UTIL
-    const isBigScreen = () => {
-        return (screenSize === "Large" || screenSize === "Huge")
-    }
-
-    useEffect(() => {
-        return () => {
-            if (changeRef.current) {
-                clearTimeout(changeRef.current);
-            }
-        }
-    }, []);
-
-    useEffect(() => {
-
-    })
-
-    return (
-        <div className="main-frame">
-            <div className="main-contents">
+    const renderContentScreen = () => {
+        return (
+            <div>
                 <div className="content-column"  style={{
                     width: getSizeValue(screenSize)
                 }}>
@@ -134,6 +116,28 @@ export const Main = () => {
                         }, 1000);
                     }}/>
                 </div>}
+            </div>
+        )
+    }
+
+    // UTIL
+    const isBigScreen = () => {
+        return (screenSize === "Large" || screenSize === "Huge")
+    }
+
+
+    useEffect(() => {
+        return () => {
+            if (changeRef.current) {
+                clearTimeout(changeRef.current);
+            }
+        }
+    }, []);
+
+    return (
+        <div className="main-frame">
+            <div className="main-contents">
+                {channels.length > 0 ? renderContentScreen() : <NoChannels/>}
             </div>
         </div>
     )
