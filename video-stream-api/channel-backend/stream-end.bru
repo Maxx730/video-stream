@@ -1,0 +1,25 @@
+meta {
+  name: stream-end
+  type: http
+  seq: 5
+}
+
+post {
+  url: http://localhost:2276/done
+  body: json
+  auth: inherit
+}
+
+params:query {
+  : 
+}
+
+body:json {
+  {
+    "name": "TestStream|Test Title|Test Desc"
+  }
+}
+
+settings {
+  encodeUrl: true
+}
