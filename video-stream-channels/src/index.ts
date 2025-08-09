@@ -83,9 +83,8 @@ app.post('/init', (req: Request, res: Response) => {
                 path: `${channelName}.m3u8`,
                 started: new Date()
             });
-            logEvent(`STREAM STARTED: ${key}`);
-            res.setHeader('Location', `rtmp://rtmp/live/${channelName}`);
-            res.sendStatus(302);
+            logEvent(`STREAM STARTED: ${title}`);
+            res.status(302).set('Location', `rtmp://rtmp/live/${channelName}`).end();
         }
     } else {
         res.sendStatus(403);

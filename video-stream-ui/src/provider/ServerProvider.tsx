@@ -1,8 +1,12 @@
 import { createContext, useState, useEffect, useRef } from "react";
 
 export interface Channel {
-    name: string,
-    url: string
+    key: string,
+    title: string,
+    desc: string,
+    viewers?: Array<any>,
+    path: string,
+    started: Date
 }
 
 export interface Error {
@@ -55,35 +59,11 @@ export const ServerProvider: React.FC<{
             return;
         }
         const data: string = await channelResponse.text();
-        console.log(data);
-    }
-    const loadChannels = async () => {
-        console.log("Loading Channels...");
-        const channelResponse = await fetch(`https://${serverIp}/stat/`);
-        if (!channelResponse.ok) {
-            addError("Error in channel response.")
-            return;
-        }
-        const data: string = await channelResponse.text();
-        setChannels(parseChannels(data))
-    }
-
-    const parseChannels = (data: string): Array<Channel> => {
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(data, "application/xml");
-
-        // ✅ Example: Extract stream names
-        const streams = xmlDoc.getElementsByTagName('stream');
-
-        const streamList = Array.from(streams).map(stream => {
-            const name = stream.getElementsByTagName('name')[0]?.textContent;
-            return { name, url: ``} as Channel;
-        });
-        return streamList;
+        setChannels(JSON.parse(data));
     }
 
     const getChannelURL = () => {
-        return `https://${serverIp}/hls/${channels[currentChannel].name}.m3u8`
+        return `https://${serverIp}/hls/${channels[currentChannel].path}`
     }
 
     const getViewCount = async () => {
@@ -95,7 +75,7 @@ export const ServerProvider: React.FC<{
     }
 
     useEffect(() => {
-        loadChannels();
+        //loadChannels();
         getChannels();
     }, []);
 

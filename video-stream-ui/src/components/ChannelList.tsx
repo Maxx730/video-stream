@@ -11,9 +11,9 @@ interface ChannelListProps {
 
 export const ChannelList = ({ onChannelSelected }: ChannelListProps) => {
     const { channels, currentChannel } = useContext(serverContextInstance);
-    const isCurrentChannel = (name: string) => {
-        const currentChannelName = channels[currentChannel].name;
-        return name === currentChannelName;
+    const isCurrentChannel = (key: string) => {
+        const currentChannelName = channels[currentChannel].key;
+        return key === currentChannelName;
     }
     return (
         <div className="channel-list-frame">
@@ -27,19 +27,19 @@ export const ChannelList = ({ onChannelSelected }: ChannelListProps) => {
                     <Table.Body>
                         {channels.map((channel: Channel) => {
                             return (
-                                <Table.Row key={channel.name}>
+                                <Table.Row key={channel.key}>
                                     <Table.Cell>
-                                        {!isCurrentChannel(channel.name) && 
+                                        {!isCurrentChannel(channel.key) && 
                                         <IconButton onClick={() => {
                                             onChannelSelected(channels.indexOf(channel))
-                                        }} disabled={isCurrentChannel(channel.name)} variant={'surface'} size={'xs'}>
+                                        }} disabled={isCurrentChannel(channel.key)} variant={'surface'} size={'xs'}>
                                             <FaEye />
                                         </IconButton>}
-                                        {channel.name}
+                                        {channel.title}
                                     </Table.Cell>
                                     <Table.Cell textAlign={'start'}></Table.Cell>
                                     <Table.Cell textAlign={"end"}>
-                                        {isCurrentChannel(channel.name) && 
+                                        {isCurrentChannel(channel.key) && 
                                         <Tag.Root colorPalette={"red"}>
                                             <Tag.Label>Live</Tag.Label>
                                         </Tag.Root>}
