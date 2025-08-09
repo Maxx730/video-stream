@@ -84,7 +84,7 @@ app.post('/init', (req: Request, res: Response) => {
                 started: new Date()
             });
             logEvent(`STREAM STARTED: ${channelName}`);
-            res.status(302).set('Location', `rtmp://localhost:1935/live/${channelName}`).end();
+            res.status(302).set('Location', `rtmp://dev.clam-tube.com/live/${channelName}`).end();
         }
     } else {
         res.sendStatus(403);
