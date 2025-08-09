@@ -84,7 +84,7 @@ app.post('/init', (req: Request, res: Response) => {
                 started: new Date()
             });
             logEvent(`STREAM STARTED: ${title}`);
-            res.status(302).set('Location', `rtmp://rtmp/live/${channelName}`).end();
+            res.status(302).set('Location', `rtmp://localhost:1935/live/${channelName}`).end();
         }
     } else {
         res.sendStatus(403);
