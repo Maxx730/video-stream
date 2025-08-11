@@ -68,35 +68,27 @@ const pruneViewers = () => {
 }
 
 app.post('/init', (req: Request, res: Response) => {
-    if (req.body && req.body.name) {
-        const [key, title, desc] = req.body.name.split('|');
-
-        if (channelExists(key)) {
-            res.sendStatus(403).end();
-        } else {
-            const channelName = `channel_${channels.length}`;
-            channels.push({
-                key,
-                title: title || `Channel ${channels.length}`,
-                desc,
-                viewers: [],
-                path: `${channelName}.m3u8`,
-                started: new Date()
-            });
-            logEvent(`STREAM STARTED: ${channelName}`);
-            res.status(302).set('Location', `rtmp://dev.clam-tube.com/live/${channelName}`).end();
+    logEvent('REGISTERING CHANNEL');
+    if (req.body && req.body.key) {
+        const newChannel: Channel = {
+            key: req.body.key,
+            title: req.body.title || `Channel ${channels.length}`,
+            desc: req.body.desc || '',
+            started: new Date(),
+            path: `${req.body.key}.m3u8`,
+            viewers: []
         }
+        channels.push(newChannel);
+        res.sendStatus(200);
     } else {
+        logEvent('REGISTRATION FAILED');
         res.sendStatus(403);
     }
 });
 app.post('/done', (req: Request, res: Response) => {
-    if (req.body && req.body.name) {
-        const [key, title, desc] = req.body.name.split('|');
-        if (channelExists(key)) {
-            logEvent(`STREAM ENDED: ${key}`);
-            removeChannelByKey(key);
-        }
+    if (req.body && req.body.key) {
+        logEvent(`REMOVING CHANNEL ${req.body.key}`);
+        removeChannelByKey(req.body.key);
     }
     
     res.sendStatus(200);
