@@ -17,7 +17,7 @@ services:
     environment:
       - NODE_ENV=production
     volumes:
-      - ./video-stream-media/media:/app/media
+      - ./media:/app/media
 
   ui:
     build: ./video-stream-ui

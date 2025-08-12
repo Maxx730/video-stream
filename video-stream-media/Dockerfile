@@ -7,6 +7,7 @@ RUN apk add --no-cache ffmpeg
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci --only=production
+RUN npm install node-media-server@2 --production
 
 # Copy your JS source (e.g., server.js)
 COPY . .

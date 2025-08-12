@@ -1,5 +1,5 @@
 module.exports = {
-  logType: 2, // reduce noise
+  logType: 3,
   rtmp: {
     port: 1935,
     chunk_size: 60000,
@@ -10,10 +10,10 @@ module.exports = {
   http: {
     port: 8000,
     allow_origin: '*',      // tighten later
-    mediaroot: './media',   // HLS/DASH output lives here
+    mediaroot: '/app/media',   // HLS/DASH output lives here
   },
   trans: {
-    ffmpeg: 'ffmpeg',       // path to ffmpeg
+    ffmpeg: '/usr/bin/ffmpeg',       // path to ffmpeg
     tasks: [
       {
         app: 'live',
