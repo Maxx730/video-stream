@@ -69,6 +69,7 @@ const pruneViewers = () => {
 
 app.post('/init', (req: Request, res: Response) => {
     logEvent('REGISTERING CHANNEL');
+    console.log(req);
     if (req.body && req.body.key) {
         const newChannel: Channel = {
             key: req.body.key,
