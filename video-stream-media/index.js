@@ -14,6 +14,7 @@ mediaServer.on('prePublish', (id, path, args) => {
 mediaServer.on('postPublish', async (id, path, args) => {
     logEvent('INITIALIZING CHANNEL');
     const session = mediaServer.getSession(id);
+    console.log(args);
     // INITIALIZE CHANNEL FOR OTHER VIEWERS
     const initResponse = await fetch('http://channels:2276/init', {
       method: 'POST',
