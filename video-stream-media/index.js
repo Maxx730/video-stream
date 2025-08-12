@@ -21,6 +21,7 @@ mediaServer.on('postPublish', async (id, path, args) => {
       headers: {'content-type': 'application/json'},
       body: JSON.stringify({ title: args.title, desc: args.desc, key: args.key }),
     });
+    console.log(initResponse.status);
     if (initResponse.status != 200) {
         logEvent('ERROR INITIALIZING CHANNEL');
         session.reject();
