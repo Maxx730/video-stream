@@ -24,8 +24,8 @@ module.exports = {
         app: 'live',
         hls: true,
         hlsFlags: '[hls_time=2:hls_list_size=12:hls_flags=delete_segments]',
-        vc: 'libx264',
-        ac: 'aac',
+        vc: 'copy',
+        ac: 'copy',
         vCodecPreset: 'superfast',     // faster than veryfast
         videoBitrate: '2200k',         // reduce a bit
         videoProfile: 'main',
