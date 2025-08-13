@@ -16,10 +16,10 @@ export const SideTabs = ({ onChannelSelected }: SideTabsProps) => {
                         <Tabs.Trigger value="channels">
                             Channels
                         </Tabs.Trigger>
-                        <Tabs.Trigger value="chat">
+                        <Tabs.Trigger disabled={true} value="chat">
                             Chat
                         </Tabs.Trigger>
-                        <Tabs.Trigger value="settings">
+                        <Tabs.Trigger disabled={true} value="settings">
                             Settings
                         </Tabs.Trigger>
                         <Tabs.Indicator rounded="l2" />
