@@ -63,29 +63,13 @@ export const ServerProvider: React.FC<{
     }
 
     const getChannelURL = () => {
-        return `https://${serverIp}/hls/${channels[currentChannel].path}`
-    }
-
-    const getViewCount = async () => {
-        const data = await fetch(`https://${serverIp}/viewers/`);
-        if (data.ok) {
-            const json = await data.json();
-            setViewCount(json.viewerCount);
-        }
+        return `https://${serverIp}/live/${channels[currentChannel].path}`
     }
 
     useEffect(() => {
         //loadChannels();
         getChannels();
     }, []);
-
-    useEffect(() => {
-        setLoading(false);
-        const interval = setInterval(getViewCount, 5000);
-        return () => {
-            clearInterval(interval);
-        }
-    }, [channels]);
 
     useEffect(() => {
     }, [changeChannelTimer]);
