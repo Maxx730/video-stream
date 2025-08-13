@@ -60,6 +60,7 @@ export const ServerProvider: React.FC<{
         }
         const data: string = await channelResponse.text();
         setChannels(JSON.parse(data));
+        setLoading(false);
     }
 
     const getChannelURL = () => {
@@ -67,7 +68,6 @@ export const ServerProvider: React.FC<{
     }
 
     useEffect(() => {
-        //loadChannels();
         getChannels();
     }, []);
 
