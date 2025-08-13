@@ -22,9 +22,6 @@ export const Main = () => {
     const renderTop = () => {
         return (
             <div className="top-frame">
-                <div className="top-section">
-                    <ViewCount count={viewCount}/>
-                </div>
                 <div className="top-section center">
                     <SegmentGroup.Root defaultValue={screenSize} onValueChange={details => {
                         setScreenSize(details.value || "Normal");
@@ -32,9 +29,6 @@ export const Main = () => {
                         <SegmentGroup.Indicator />
                         <SegmentGroup.Items items={screenSizes} />
                     </SegmentGroup.Root>
-                </div>
-                <div className="top-section">
-
                 </div>
             </div>
         )

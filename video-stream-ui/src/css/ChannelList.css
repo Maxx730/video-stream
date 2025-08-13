@@ -1,3 +1,27 @@
 .channel-list-frame {
+    .channel-item {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        .channel-item-details {
+            display: flex;
+            flex-direction: column;
+            gap: -6px;
+            span {
+                font-size: 10px;
+                padding: 0;
+                line-height: 16px;
+            }
+            span:first-child {
+                font-size: 16px;
+                font-weight: bold;
+            }
+        }
+    }
 
+    .channel-item-tags {
+        display: flex;
+        flex-direction: row;
+        gap: 8px;
+    }
 }
