@@ -137,7 +137,6 @@ export const Main = () => {
     return (
         <div className="main-frame">
             <div className="main-contents">
-                {JSON.stringify(channels)}
                 {channels.length > 0 ? renderContentScreen() : <NoChannels/>}
             </div>
         </div>

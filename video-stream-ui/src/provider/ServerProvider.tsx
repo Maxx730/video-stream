@@ -64,7 +64,7 @@ export const ServerProvider: React.FC<{
     }
 
     const getChannelURL = () => {
-        return `https://${serverIp}/live/${channels[currentChannel].path}`
+        return `https://${serverIp}${channels[currentChannel].path}`
     }
 
     useEffect(() => {

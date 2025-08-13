@@ -75,7 +75,7 @@ app.post('/init', (req: Request, res: Response) => {
             title: req.body.title || `Channel ${channels.length}`,
             desc: req.body.desc || '',
             started: new Date(),
-            path: `/live/${req.body.key}/index.m3u8`,
+            path: `/stream/${req.body.key}/index.m3u8`,
             viewers: []
         }
         channels.push(newChannel);
