@@ -64,7 +64,7 @@ export const ServerProvider: React.FC<{
     }
 
     const getChannelURL = () => {
-        return `https://${serverIp}${channels[currentChannel].path}`
+        return `https://${serverIp}/stream/max.m3u8`
     }
 
     useEffect(() => {
