@@ -6,18 +6,16 @@ services:
     ports:
       - "2276:2276"
 
-  media:
-    build: ./video-stream-media
-    container_name: media
+  rtmp:
+    build: ./video-stream-rtmp
+    container_name: rtmp
+    ports:
+      - "1935:1935"
+      - "8080:8080"
     depends_on:
       - channels
-    ports:
-      - "1935:1935"   # RTMP ingest
-      - "8000:8000"   # HTTP HLS playback
-    environment:
-      - NODE_ENV=production
     volumes:
-      - ./media:/app/media
+      - ./hls:/var/www/hls
 
   ui:
     build: ./video-stream-ui

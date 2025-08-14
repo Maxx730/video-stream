@@ -26,14 +26,6 @@ module.exports = {
         hlsFlags: '[hls_time=2:hls_list_size=12:hls_flags=delete_segments]',
         vc: 'copy',
         ac: 'copy',
-        vCodecPreset: 'superfast',     // faster than veryfast
-        videoBitrate: '2200k',         // reduce a bit
-        videoProfile: 'main',
-        videoSize: '1280x720',
-        videoGop: '60',                // 30 fps -> keyframe every 2s
-        audioBitrate: '128k',
-        audioSamplerate: 44100,
-        audioChannel: 2
       }
     ]
   }
