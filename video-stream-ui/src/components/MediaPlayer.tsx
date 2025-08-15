@@ -90,7 +90,7 @@ export const MediaPlayer = ({ url, effect = 'NONE', size = 'Normal', playing = t
             <div className="player-frame" style={{
                 width: getSizeValue(size)
             }}>
-                <ReactPlayer volume={volume} muted={muted} controls={false} height={'auto'} width={getSizeValue(size)} src={url} playing={playing}/>
+                <ReactPlayer className='player-element' volume={volume} muted={muted} controls={false} height={'auto'} width={getSizeValue(size)} src={url} playing={playing}/>
             </div>
             <div className="control-frame">
                 {renderControls()}

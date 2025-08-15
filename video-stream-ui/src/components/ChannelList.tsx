@@ -37,7 +37,7 @@ export const ChannelList = ({ onChannelSelected }: ChannelListProps) => {
                                                 <FaEye />
                                             </IconButton>
                                             <div className="channel-item-details">
-                                                <span>{channel.title}</span>
+                                                <span>{channel.key}</span>
                                                 <span>{channel.desc || "No Description"}</span>
                                             </div>
                                         </div>
@@ -45,7 +45,6 @@ export const ChannelList = ({ onChannelSelected }: ChannelListProps) => {
                                     <Table.Cell textAlign={'start'}></Table.Cell>
                                     <Table.Cell textAlign={"end"}>
                                         <div className="channel-item-tags">
-                                            <ViewCount/>
                                             {isCurrentChannel(channel.key) && 
                                             <Tag.Root size={"lg"} colorPalette={"red"}>
                                                 <Tag.Label>Live</Tag.Label>

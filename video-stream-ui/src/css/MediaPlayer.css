@@ -3,6 +3,7 @@
     overflow: hidden;
     border-radius: 12px;
     background-color: black;
+    min-height: 480px;
 }
 
 .control-frame {

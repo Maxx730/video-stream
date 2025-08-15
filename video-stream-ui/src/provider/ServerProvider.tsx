@@ -64,7 +64,7 @@ export const ServerProvider: React.FC<{
     }
 
     const getChannelURL = () => {
-        return `https://${serverIp}/stream/connorkey.m3u8`
+        return `https://${serverIp}${channels[currentChannel].path}`
     }
 
     useEffect(() => {
