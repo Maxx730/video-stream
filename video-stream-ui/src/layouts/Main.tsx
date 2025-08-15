@@ -97,7 +97,7 @@ export const Main = () => {
                 <div className="content-column"  style={{
                     width: getSizeValue(screenSize)
                 }}>
-                    {true ? renderPlayerScreen() : <NoChannels/>}
+                    {channels.length > 0 ? renderPlayerScreen() : <NoChannels/>}
                 </div>
                 {!isBigScreen() &&   
                 <div className="content-column" style={{
@@ -131,7 +131,7 @@ export const Main = () => {
     return (
         <div className="main-frame">
             <div className="main-contents">
-                {true ? renderContentScreen() : <NoChannels/>}
+                {channels.length > 0 ? renderContentScreen() : <NoChannels/>}
             </div>
         </div>
     )
