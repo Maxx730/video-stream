@@ -6,6 +6,14 @@ services:
     ports:
       - "2276:2276"
 
+  viewers:
+    build: ./video-stream-viewers
+    container_name: viewers
+    ports:
+      - "2277:2277"
+    depends_on:
+      - channels
+
   rtmp:
     build: ./video-stream-rtmp
     container_name: rtmp
@@ -13,7 +21,7 @@ services:
       - "1935:1935"
       - "8080:8080"
     depends_on:
-      - channels
+      - viewers
     volumes:
       - ./hls:/var/www/hls
 
