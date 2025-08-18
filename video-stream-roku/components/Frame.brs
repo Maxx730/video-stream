@@ -4,7 +4,7 @@ sub init()
 
   ' Build a ContentNode explicitly (avoids type mismatch)
   content = CreateObject("roSGNode", "ContentNode")
-  content.url = "http://video.clam-tube.com/stream/Random%20Movies.m3u8"
+  content.url = "http://video.clam-tube.com/hls/Random%20Movies.m3u8"
   content.SetField("streamFormat", "hls")
   content.title = "Test HLS"
 
@@ -15,6 +15,7 @@ sub init()
 end sub
 
 sub onPlayerState()
+  ?m.player.content.url
   ? "VIDEO state:", m.player.state   ' buffering | playing | paused | finished | error
 end sub
 
