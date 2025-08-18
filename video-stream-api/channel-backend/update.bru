@@ -1,0 +1,25 @@
+meta {
+  name: update
+  type: http
+  seq: 6
+}
+
+post {
+  url: http://localhost:2277/update
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "TestName"
+  }
+}
+
+body:form-urlencoded {
+  name: testName
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="ChannelMenu" extends="Scene"> 
+	<children>
+        <Rectangle id="menuPanel" width="520" height="1080" color="0x1E1E1EFF"/>
+    </children>
+</component>

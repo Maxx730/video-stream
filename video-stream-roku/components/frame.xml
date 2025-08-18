@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="Frame" extends="Scene"> 
+    <script type="text/brightscript" uri="pkg:/components/Frame.brs" />
+    <children>
+        <Rectangle
+        id="bg"
+        width="1920"
+        height="1080"
+        color="0x101010FF" />
+        <Video
+        id="player"
+        width="1920"
+        height="1080"
+        translation="[0,0]" />
+    </children>
+</component>
