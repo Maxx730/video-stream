@@ -23,7 +23,7 @@ services:
     depends_on:
       - viewers
     volumes:
-      - /var/www/hls:/var/www/hls
+      - ./hls:/var/www/hls
 
   ui:
     build: ./video-stream-ui
