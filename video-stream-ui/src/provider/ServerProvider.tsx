@@ -30,7 +30,7 @@ export interface ServerContext {
 };
 
 const serverContextDefault = {
-    serverIp: "localhost",
+    serverIp: "video.clam-tube.com",
     serverPort: "3000",
     channels: [],
     currentChannel: null,
@@ -63,7 +63,7 @@ export const ServerProvider: React.FC<{
 
     // CHANNELS
     const getChannels = async () => {
-        const channelResponse = await fetch(`/channels`);
+        const channelResponse = await fetch(`https://${serverIp}/channels`);
         if (!channelResponse.ok) {
             addError("Error loading channels...");
         }
