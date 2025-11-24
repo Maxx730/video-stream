@@ -4,9 +4,15 @@ export interface Channel {
     key: string,
     title: string,
     desc: string,
-    viewers?: Array<any>,
     path: string,
-    started: Date
+    started: Date,
+}
+
+export interface Viewer {
+    name: string,
+    ping: Date,
+    channel: string,
+    current: boolean
 }
 
 export interface Error {
@@ -17,21 +23,25 @@ export interface ServerContext {
     serverIp: string,
     serverPort: string,
     channels: Array<Channel>,
-    currentChannel: number,
+    viewers: Array<Viewer>,
+    currentChannel: Channel | null,
     errors: Array<Error>,
     loading: boolean
 };
 
 const serverContextDefault = {
-    serverIp: "dev.clam-tube.com",
-    serverPort: "8080",
+    serverIp: "localhost",
+    serverPort: "3000",
     channels: [],
-    currentChannel: 0,
+    currentChannel: null,
     errors: [],
     loading: true
 };
 export const serverContextInstance = createContext<any>(serverContextDefault);
 export const CHANNEL_UPDATE_DELTA: number = 30000;
+const VIEW_PING_FREQUENCY: number = 5000;
+const JSON_HEADERS = { 'Content-Type': 'application/json' }
+let pingInterval: number | null = null;
 
 export const ServerProvider: React.FC<{
     children: React.ReactNode
@@ -39,11 +49,9 @@ export const ServerProvider: React.FC<{
     const [serverIp] = useState(serverContextDefault.serverIp);
     const [serverPort] = useState(serverContextDefault.serverPort);
     const [channels, setChannels] = useState<Array<Channel>>(serverContextDefault.channels);
-    const [currentChannel, setCurrentChannel] = useState<number>(serverContextDefault.currentChannel);
+    const [channel, setChannel] = useState<number>(-1);
     const [errors, setErrors] = useState(serverContextDefault.errors);
-    const [loading, setLoading] = useState(serverContextDefault.loading);
-    const [viewCount, setViewCount] = useState(0);
-    const changeChannelTimer = useRef<NodeJS.Timeout | null>(null);
+    const [viewers, setViewers] = useState<Array<Viewer>>();
 
     const addError = (error: string) => {
         const clonedErrors = JSON.parse(JSON.stringify(errors));
@@ -52,45 +60,111 @@ export const ServerProvider: React.FC<{
         });
         setErrors(clonedErrors);
     }
+
+    // CHANNELS
     const getChannels = async () => {
-        const channelResponse = await fetch(`https://${serverIp}/channels`);
+        const channelResponse = await fetch(`http://video.clam-tube.com:2276/channels`);
         if (!channelResponse.ok) {
-            addError("Error in channel response.")
-            return;
+            addError("Error loading channels...");
         }
         const data: string = await channelResponse.text();
-        setChannels(JSON.parse(data));
-        setLoading(false);
+        const channels: Array<Channel> = JSON.parse(data);
+        return channels;
     }
-
     const getChannelURL = () => {
-        return `https://${serverIp}${channels[currentChannel].path}`
+        return `http://video.clam-tube.com${channels[channel].path}`;
+    }
+
+    // VIEWERS
+    const getViewers = async () => {
+        const viewersResponse = await fetch(`http://${serverIp}:2277/viewers`);
+        if (!viewersResponse.ok) {
+            addError('Error loading viewers...');
+        }
+        const data = await viewersResponse.json();
+        return data;
+    }
+    const getPing = async () => {
+        const pingResponse = await fetch(`http://${serverIp}:2277/ping`);
+        if (!pingResponse.ok) {
+            addError(`ERROR: Error pinging...`);
+        }
+        const data = await pingResponse.json();
+        setViewers(data);
+    }
+    const getCurrentViewer = () => {
+        if (viewers) {
+            return viewers.find(viewer => viewer.current);
+        }
+        return null;
+    }
+
+    // ACTIONS
+    const join = async (key: string) => {
+            const joinResponse = await fetch(`http://${serverIp}:2277/join`, {
+                method: 'POST',
+                headers: JSON_HEADERS,
+                body: JSON.stringify({ channel: key })
+            });
+            try {
+                const data = await joinResponse.json();
+                return data;
+            } catch(err) {
+                addError(`ERROR: ${err}`);
+                return;
+            }
+    }
+    const watch = async (key: string) => {
+        const watchResponse = await fetch(`http://${serverIp}:2277/watch`, {
+            method: 'POST',
+            headers: JSON_HEADERS,
+            body: JSON.stringify({ channel: key })
+        });
+        const data = await watchResponse.json();
+        setViewers(data);
+    }
+
+    const setup = async () => {
+        try {
+            const allChannels = await getChannels();
+            if (allChannels && allChannels.length > 0 && Object.hasOwn(allChannels[0] as Object, "key")) {
+                const firstChannel: Channel = allChannels[0] as Channel;
+                await join(firstChannel.key);
+                setChannel(0);
+            }
+            setChannels(allChannels as Channel[]);
+
+            const allViewers = await getViewers();
+            setViewers(allViewers as Viewer[]);
+            pingInterval = setInterval(() => {
+                const updatedData = getPing();
+            }, VIEW_PING_FREQUENCY);
+        } catch(err) {
+            addError(`ERROR: ${err}`);
+        }
     }
 
     useEffect(() => {
-        getChannels();
+        setup();
+        return () => {
+            if (pingInterval) {
+                clearInterval(pingInterval);
+            }
+        }
     }, []);
-
-    useEffect(() => {
-    }, [changeChannelTimer]);
 
     return (
         <serverContextInstance.Provider value={{
             serverIp,
             serverPort,
             channels,
-            currentChannel,
             errors,
-            loading,
+            channel,
+            viewers,
+            watch,
+
             getChannelURL,
-            setCurrentChannel: (channel: number) => {
-                setLoading(true);
-                setCurrentChannel(channel);
-                changeChannelTimer.current = setTimeout(() => {
-                    setLoading(false);
-                }, 1000);
-            },
-            viewCount
+            getCurrentViewer
         }}>
             {children}
         </serverContextInstance.Provider>

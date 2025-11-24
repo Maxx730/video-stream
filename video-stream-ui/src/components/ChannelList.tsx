@@ -1,20 +1,29 @@
 import '../css/ChannelList.css';
 import { useContext } from 'react';
 import { serverContextInstance } from '@/provider/ServerProvider';
-import { ViewCount } from './ViewCount';
 import { Table, IconButton, Tag, SegmentGroup } from '@chakra-ui/react';
-import type { Channel } from '@/provider/ServerProvider';
+import type { Channel, Viewer } from '@/provider/ServerProvider';
 import { FaEye } from "react-icons/fa6";
 
 interface ChannelListProps {
-    onChannelSelected: (channel: number) => void;
+    onChannelSelected: (key: string) => void;
 }
 
 export const ChannelList = ({ onChannelSelected }: ChannelListProps) => {
-    const { channels, currentChannel } = useContext(serverContextInstance);
-    const isCurrentChannel = (key: string) => {
-        const currentChannelName = channels[currentChannel].key;
-        return key === currentChannelName;
+    const { channels, getCurrentViewer, viewers } = useContext(serverContextInstance);
+    const watchingChannel = (key: string) => {
+        const currentViewer: Viewer = getCurrentViewer() as Viewer;
+        if (currentViewer) {
+            return key === currentViewer.channel;
+        }
+        return false;
+    }
+    const getWatchCount = (key: string) => {
+        if (viewers) {
+            return viewers.filter((viewer: { channel: string; }) => viewer.channel === key).length;
+        } else {
+            return 0;
+        }
     }
     return (
         <div className="channel-list-frame">
@@ -32,8 +41,8 @@ export const ChannelList = ({ onChannelSelected }: ChannelListProps) => {
                                     <Table.Cell>
                                         <div className="channel-item">
                                             <IconButton onClick={() => {
-                                                onChannelSelected(channels.indexOf(channel))
-                                            }} disabled={isCurrentChannel(channel.key)} variant={'surface'} size={'xs'}>
+                                                onChannelSelected(channel.key)
+                                            }} disabled={watchingChannel(channel.key)} variant={'surface'} size={'xs'}>
                                                 <FaEye />
                                             </IconButton>
                                             <div className="channel-item-details">
@@ -45,10 +54,9 @@ export const ChannelList = ({ onChannelSelected }: ChannelListProps) => {
                                     <Table.Cell textAlign={'start'}></Table.Cell>
                                     <Table.Cell textAlign={"end"}>
                                         <div className="channel-item-tags">
-                                            {isCurrentChannel(channel.key) && 
-                                            <Tag.Root size={"lg"} colorPalette={"red"}>
-                                                <Tag.Label>Live</Tag.Label>
-                                            </Tag.Root>}
+                                            <Tag.Root>
+                                                <Tag.Label>{getWatchCount(channel.key)}</Tag.Label>
+                                            </Tag.Root>
                                         </div>
                                     </Table.Cell>
                                 </Table.Row>

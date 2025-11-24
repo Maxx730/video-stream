@@ -4,9 +4,9 @@ sub init()
 
   ' Build a ContentNode explicitly (avoids type mismatch)
   content = CreateObject("roSGNode", "ContentNode")
-  content.url = "http://video.clam-tube.com/hls/Random%20Movies.m3u8"
+  content.url = "http://video.clam-tube.com/stream/Random_Movies.m3u8"
   content.SetField("streamFormat", "hls")
-  content.title = "Test HLS"
+  content.title = "Clam Tube"
 
   m.player.content = content         ' <-- THIS is where your error was
   m.player.observeField("state", "onPlayerState")

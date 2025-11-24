@@ -1,19 +1,28 @@
 import express, { Request, Response } from 'express';
+import cors from 'cors';
 
 type Viewer = {
     ip: string,
     name: string,
     ping: Date,
-    channel?: string
+    channel?: string,
+    current?: boolean
 };
 
 const app = express();
 app.use(express.json());
+app.use(cors({
+  origin: ["http://localhost:5173", "http://localhost:3000"],
+  methods: ["GET","POST","OPTIONS"],
+  allowedHeaders: ["Content-Type","Authorization"]
+}));
+
 
 const port = process.env.PORT || 2277;
 const viewers: Array<Viewer> = [];
 const pruneTimer: number = 10000;
 const pruneTimeout: number = 30000;
+
 const randomNumber = (): number => {
   return Math.floor(1000 + Math.random() * 9000);
 }
@@ -46,34 +55,57 @@ const cleanIp = (ip: string): string => {
 }
 const getRequestIp = (req: Request) => {
     const viewerIp: string | undefined = req.ip;
-    if (viewerIp) {
-        return cleanIp(viewerIp);
+    return cleanIp(viewerIp as string);
+}
+const getRequestViewer = (ip: string) => {
+    if (ip) {
+        const currentViewer = viewers.find(viewer => viewer.ip === ip) as Viewer;
+        return currentViewer;
     }
-    return undefined;
+    return;
+}
+const listViewers = (isCurrent: boolean) => {
+    return JSON.stringify(
+        viewers.map(viewer => {
+            return {
+                name: viewer.name,
+                ping: viewer.ping,
+                channel: viewer.channel,
+                current: isCurrent
+            }
+        })
+    );
 }
 
 app.post('/join', (req: Request, res: Response) => {
-    const viewerIp: string | undefined = req.ip;
-    if (viewerIp) {
-        viewers.push({
-            ip: cleanIp(viewerIp),
-            name: `User-${randomNumber()}`,
-            ping: new Date()
-        });
+    try {
+        const viewerIp: string | undefined = cleanIp(req.ip as string);
+        const isAlreadyViewer = viewers.some(v => v.ip === viewerIp);
+        const channelKey: string | undefined = req.body.channel;
+        if (viewerIp && !isAlreadyViewer) {
+            viewers.push({
+                ip: viewerIp,
+                name: `User-${randomNumber()}`,
+                ping: new Date(),
+                channel: channelKey
+            });
+        }
+        res.statusCode = 200;
+        res.send(JSON.stringify(viewers));
+    } catch (err) {
+        res.sendStatus(500);
     }
-    res.sendStatus(200);
 });
-app.post('/watch', (req: Request, res: Response) => {
-    const viewerIp: string | undefined = req.ip;
-    if (viewerIp && req.body && req.body.channel) {
-        viewers.forEach(viewer => {
-            if (viewer.ip === cleanIp(viewerIp)) {
-                logEvent(`UPDATED WATCHED CHANNEL`);
-                viewer.channel = req.body.channel;
-            }
-        });
-    }
-    res.sendStatus(200);
+
+
+
+app.post('/watch', async (req: Request, res: Response) => {
+    const currentViewer: Viewer = getRequestViewer(
+        getRequestIp(req)
+    ) as Viewer;
+    currentViewer.channel = req.body.channel;
+    var userList: String = await listViewers(currentViewer != null)
+    res.send(userList);
 });
 app.post('/update', (req: Request, res: Response) => {
     const ip: string | undefined = getRequestIp(req);
@@ -94,23 +126,27 @@ app.post('/update', (req: Request, res: Response) => {
     }
 });
 app.get('/viewers', (req: Request, res: Response) => {
-    logEvent('LOADING VIEWERS');
-    res.send(JSON.stringify(viewers.map(viewer => {
-        return {
-            name: viewer.name,
-            ping: viewer.ping
-        }
-    })));
+    const currentViewer = getRequestViewer(getRequestIp(req)) as Viewer;
+    res.send(listViewers(currentViewer ? true : false));
 });
 app.get('/ping', (req: Request, res: Response) => {
     const viewerIp: string | undefined = req.ip;
-    viewers.forEach(viewer => {
-        if (viewerIp && viewer.ip === cleanIp(viewerIp)) {
-            logEvent(`UPDATING REFRESH - ${viewers.indexOf(viewer)}`)
-            viewer.ping = new Date();
+    
+    if (viewerIp) {
+        const currentViewer = viewers.find(viewer => viewer.ip === cleanIp(viewerIp)) as Viewer;
+        if (currentViewer) {
+            currentViewer.ping = new Date()
+            currentViewer.current = true;
         }
-    });
-    res.sendStatus(200);
+    }
+    res.send(JSON.stringify(viewers.map(viewer => {
+        return {
+            name: viewer.name,
+            ping: viewer.ping,
+            channel: viewer.channel,
+            current: viewer.current
+        }
+    })));
 });
 app.get('/viewcount/:channel', (req: Request, res: Response) => {
     res.json({

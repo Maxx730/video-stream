@@ -25,8 +25,22 @@ services:
     volumes:
       - ./hls:/var/www/hls
 
+  irc:
+    image: ghcr.io/ergochat/ergo:stable
+    container_name: irc
+    command: ["--conf", "/ircd/ergo.yaml"]
+    ports:
+      - "6667:6667"   # plaintext IRC
+      - "6697:6697"   # TLS IRC
+    volumes:
+      - ./video-stream-irc/ergo:/ircd
+      - ./video-stream-irc/tls:/ircd/tls:ro
+    restart: unless-stopped
+
   ui:
     build: ./video-stream-ui
     container_name: ui
+    depends_on:
+      - rtmp
     ports:
     - "3000:3000"

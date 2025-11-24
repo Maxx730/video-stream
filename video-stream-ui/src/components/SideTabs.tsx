@@ -3,7 +3,7 @@ import { ChannelList } from "./ChannelList";
 import '../css/SideTabs.css';
 
 export interface SideTabsProps {
-    onChannelSelected: (channel: number) => void;
+    onChannelSelected: (key: string) => void;
 }
 
 export const SideTabs = ({ onChannelSelected }: SideTabsProps) => {
@@ -12,18 +12,6 @@ export const SideTabs = ({ onChannelSelected }: SideTabsProps) => {
         return (
             <div className="side-tabs">
                 <Tabs.Root fitted defaultValue="channels" variant="plain">
-                    <Tabs.List bg="bg.muted" rounded="l3" p="1">
-                        <Tabs.Trigger value="channels">
-                            Channels
-                        </Tabs.Trigger>
-                        <Tabs.Trigger disabled={true} value="chat">
-                            Chat
-                        </Tabs.Trigger>
-                        <Tabs.Trigger disabled={true} value="settings">
-                            Settings
-                        </Tabs.Trigger>
-                        <Tabs.Indicator rounded="l2" />
-                    </Tabs.List>
                     <Tabs.Content value="channels" _open={{
                         animationName: "fade-in, scale-in",
                         animationDuration: "300ms",

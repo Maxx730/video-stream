@@ -2,9 +2,10 @@ import { Stack, SegmentGroup, Flex, ProgressCircle, Text } from "@chakra-ui/reac
 import { useContext, useState, useEffect, useRef } from "react";
 import { serverContextInstance } from "@/provider/ServerProvider";
 import { getSizeValue } from "@/util/values";
-import { ViewCount } from "@/components/ViewCount";
 import { SideTabs } from "@/components/SideTabs";
 import { MediaPlayer } from '../components/MediaPlayer';
+import { useIsMobile } from "@/util/utils";
+import DebugStats from "../components/DebugStats";
 
 import '../css/Main.css';
 import { NoChannels } from "@/components/NoChannels";
@@ -12,11 +13,12 @@ import { NoChannels } from "@/components/NoChannels";
 const screenSizes = ["Small", "Normal", "Large", "Huge"];
 
 export const Main = () => {
-    const { getChannelURL, channels, viewCount, setCurrentChannel, loading } = useContext(serverContextInstance);
+    const { getChannelURL, channels, setCurrentChannel, loading, watch } = useContext(serverContextInstance);
     const [effectState, setEffectState] = useState<string>("NONE");
     const [screenSize, setScreenSize] = useState<string>(screenSizes[1]);
     const changeRef = useRef<NodeJS.Timeout | null>(null);
     const [playing, setPlaying] = useState(true);
+    const isMobile = useIsMobile();
 
     // RENDER METHODS
     const renderTop = () => {
@@ -53,7 +55,7 @@ export const Main = () => {
         )
     }
     const renderPlayer = () => {
-        return <MediaPlayer playing={playing} effect={effectState} size={screenSize} url={getChannelURL()}/>;
+        return <MediaPlayer isMobile={isMobile} playing={playing} effect={effectState} size={screenSize} url={getChannelURL()}/>;
     }
     const renderChannelControls = () => {
         return (
@@ -85,7 +87,7 @@ export const Main = () => {
         }
         return (
             <Stack>
-                {renderTop()}
+                {!isMobile && renderTop()}
                 {renderPlayer()}
                 {renderControls()}
             </Stack>
@@ -93,7 +95,7 @@ export const Main = () => {
     }
     const renderContentScreen = () => {
         return (
-            <div className="main-content">
+            <div className={`main-content`}>
                 <div className="content-column"  style={{
                     width: getSizeValue(screenSize)
                 }}>
@@ -103,11 +105,8 @@ export const Main = () => {
                 <div className="content-column" style={{
                     width: '320px'
                 }}>
-                    <SideTabs onChannelSelected={channel => {
-                        setCurrentChannel(channel);
-                        changeRef.current = setTimeout(() => {
-                            
-                        }, 1000);
+                    <SideTabs onChannelSelected={key => {
+                        watch(key);
                     }}/>
                 </div>}
             </div>
@@ -129,10 +128,9 @@ export const Main = () => {
     }, []);
 
     return (
-        <div className="main-frame">
-            <div className="main-contents">
-                {channels.length > 0 ? renderContentScreen() : <NoChannels/>}
-            </div>
+        <div className={`main-frame ${isMobile && 'mobile-device'}`}>
+            {renderContentScreen()}
+            <DebugStats />
         </div>
     )
 }

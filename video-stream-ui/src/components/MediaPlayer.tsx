@@ -11,10 +11,11 @@ export interface PlayerProps {
     url: string,
     effect?: string,
     size?: string,
-    playing?: boolean
+    playing?: boolean,
+    isMobile?: boolean
 }
 
-export const MediaPlayer = ({ url, effect = 'NONE', size = 'Normal', playing = true }: PlayerProps) => {
+export const MediaPlayer = ({ url, effect = 'NONE', size = 'Normal', playing = true, isMobile = false }: PlayerProps) => {
     const [volume, setVolume] = useState(1.0);
     const [muted, setMuted] = useState(true);
 
@@ -88,7 +89,7 @@ export const MediaPlayer = ({ url, effect = 'NONE', size = 'Normal', playing = t
     return (
         <div>
             <div className="player-frame" style={{
-                width: getSizeValue(size)
+                width: isMobile ? '100%' : getSizeValue(size)
             }}>
                 <ReactPlayer className='player-element' volume={volume} muted={muted} controls={false} height={'auto'} width={getSizeValue(size)} src={url} playing={playing}/>
             </div>

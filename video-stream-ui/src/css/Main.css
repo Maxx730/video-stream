@@ -39,6 +39,18 @@ body {
     }
 }
 
+.main-frame.mobile-device {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    .main-content {
+        width: 100%;
+        flex-direction: column;
+    }
+}
+
 .header-frame {
     padding: 0px 12px;
 }

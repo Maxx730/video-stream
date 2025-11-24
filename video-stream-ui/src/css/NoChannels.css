@@ -2,3 +2,11 @@
     width: 480px;
     margin: 0 auto;
 }
+
+.mobile-device {
+    .no-channels-frame {
+        width: 100%;
+        margin: 0 auto;
+        padding: 0px 24px;
+    }   
+}

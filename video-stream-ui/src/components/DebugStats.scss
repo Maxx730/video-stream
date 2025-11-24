@@ -1,0 +1,17 @@
+.debug-stats {
+    position: absolute;
+    border: solid 1px #FFFFFF;
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    font-family: monospace;
+    padding: 8px 12px;
+    background-color: #000000;
+
+    .debug-errors {
+        color: #FF0000;
+    }
+    .debug-current-viewer {
+        color: #0000FF;
+    }
+}

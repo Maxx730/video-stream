@@ -9,8 +9,8 @@
         color="0x101010FF" />
         <Video
         id="player"
-        width="1920"
-        height="1080"
+        width="1280"
+        height="720"
         translation="[0,0]" />
     </children>
 </component>
