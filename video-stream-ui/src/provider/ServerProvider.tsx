@@ -77,7 +77,7 @@ export const ServerProvider: React.FC<{
 
     // VIEWERS
     const getViewers = async () => {
-        const viewersResponse = await fetch(`https://${serverIp}/viewers`);
+        const viewersResponse = await fetch(`https://${serverIp}/viewers/`);
         if (!viewersResponse.ok) {
             addError('Error loading viewers...');
         }
