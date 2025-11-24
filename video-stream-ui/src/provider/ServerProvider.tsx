@@ -30,7 +30,7 @@ export interface ServerContext {
 };
 
 const serverContextDefault = {
-    serverIp: "video.clam-tube.com",
+    serverIp: "dev.clam-tube.com",
     serverPort: "3000",
     channels: [],
     currentChannel: null,
@@ -77,7 +77,7 @@ export const ServerProvider: React.FC<{
 
     // VIEWERS
     const getViewers = async () => {
-        const viewersResponse = await fetch(`/viewers`);
+        const viewersResponse = await fetch(`https://${serverIp}/viewers`);
         if (!viewersResponse.ok) {
             addError('Error loading viewers...');
         }
@@ -85,7 +85,7 @@ export const ServerProvider: React.FC<{
         return data;
     }
     const getPing = async () => {
-        const pingResponse = await fetch(`/ping`);
+        const pingResponse = await fetch(`https://${serverIp}/ping`);
         if (!pingResponse.ok) {
             addError(`ERROR: Error pinging...`);
         }
@@ -101,7 +101,7 @@ export const ServerProvider: React.FC<{
 
     // ACTIONS
     const join = async (key: string) => {
-            const joinResponse = await fetch(`http://${serverIp}:2277/join`, {
+            const joinResponse = await fetch(`https://${serverIp}:2277/join`, {
                 method: 'POST',
                 headers: JSON_HEADERS,
                 body: JSON.stringify({ channel: key })
@@ -115,7 +115,7 @@ export const ServerProvider: React.FC<{
             }
     }
     const watch = async (key: string) => {
-        const watchResponse = await fetch(`/watch`, {
+        const watchResponse = await fetch(`https://${serverIp}/watch`, {
             method: 'POST',
             headers: JSON_HEADERS,
             body: JSON.stringify({ channel: key })
