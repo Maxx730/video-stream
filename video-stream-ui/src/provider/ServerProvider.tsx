@@ -63,7 +63,7 @@ export const ServerProvider: React.FC<{
 
     // CHANNELS
     const getChannels = async () => {
-        const channelResponse = await fetch(`http://${serverIp}:2276/channels`);
+        const channelResponse = await fetch(`http://channels:2276/channels`);
         if (!channelResponse.ok) {
             addError("Error loading channels...");
         }
