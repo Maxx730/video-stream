@@ -9,10 +9,19 @@ type Viewer = {
     current?: boolean
 };
 
+const origins = [
+    "https://video.clam-tube.com",
+    "http://video.clam-tube.com",
+    "https://dev.clam-tube.com",
+    "http://dev.clam-tube.com",
+    "https://localhost:3000",
+    "http://localhost:3000"
+]
+
 const app = express();
 app.use(express.json());
 app.use(cors({
-  origin: ["http://localhost:5173", "http://localhost:3000"],
+  origin: origins,
   methods: ["GET","POST","OPTIONS"],
   allowedHeaders: ["Content-Type","Authorization"]
 }));
