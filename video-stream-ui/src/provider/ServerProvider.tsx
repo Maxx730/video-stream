@@ -77,7 +77,7 @@ export const ServerProvider: React.FC<{
 
     // VIEWERS
     const getViewers = async () => {
-        const viewersResponse = await fetch(`/viewers/viewers`);
+        const viewersResponse = await fetch(`/viewers`);
         if (!viewersResponse.ok) {
             addError('Error loading viewers...');
         }
@@ -85,7 +85,7 @@ export const ServerProvider: React.FC<{
         return data;
     }
     const getPing = async () => {
-        const pingResponse = await fetch(`/viewers/ping`);
+        const pingResponse = await fetch(`/ping`);
         if (!pingResponse.ok) {
             addError(`ERROR: Error pinging...`);
         }
@@ -115,7 +115,7 @@ export const ServerProvider: React.FC<{
             }
     }
     const watch = async (key: string) => {
-        const watchResponse = await fetch(`/viewers/watch`, {
+        const watchResponse = await fetch(`/watch`, {
             method: 'POST',
             headers: JSON_HEADERS,
             body: JSON.stringify({ channel: key })
