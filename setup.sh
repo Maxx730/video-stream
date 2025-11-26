@@ -11,9 +11,11 @@ EMAIL="$2"
 SITE_ROOT="${3:-/var/www/${DOMAIN}/html}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 NGINX_SRC_CONF="${SCRIPT_DIR}/nginx.conf"
+LE_OPTIONS="/etc/letsencrypt/options-ssl-nginx.conf"
+LE_DHPARAM="/etc/letsencrypt/ssl-dhparams.pem"
 
 sudo apt update
-sudo apt install -y nginx snapd
+sudo apt install -y nginx snapd openssl
 
 sudo mkdir -p "$SITE_ROOT"
 sudo chown -R $USER:$USER "$SITE_ROOT"
@@ -57,6 +59,21 @@ sudo certbot --nginx \
   --redirect \
   -m "$EMAIL" \
   -d "$DOMAIN"
+
+if [ ! -f "$LE_OPTIONS" ]; then
+  sudo tee "$LE_OPTIONS" >/dev/null <<'EOF'
+# Managed by setup.sh fallback
+ssl_session_cache shared:le_nginx_SSL:10m;
+ssl_session_timeout 1440m;
+ssl_protocols TLSv1.2 TLSv1.3;
+ssl_prefer_server_ciphers off;
+EOF
+fi
+
+if [ ! -f "$LE_DHPARAM" ]; then
+  echo "Generating Diffie-Hellman parameters (this may take a while)..."
+  sudo openssl dhparam -out "$LE_DHPARAM" 2048
+fi
 
 if [ -f "$NGINX_SRC_CONF" ]; then
   sudo cp "$NGINX_SRC_CONF" /etc/nginx/nginx.conf
