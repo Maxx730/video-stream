@@ -13,6 +13,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 NGINX_SRC_CONF="${SCRIPT_DIR}/nginx.conf"
 LE_OPTIONS="/etc/letsencrypt/options-ssl-nginx.conf"
 LE_DHPARAM="/etc/letsencrypt/ssl-dhparams.pem"
+LE_CERT="/etc/letsencrypt/live/${DOMAIN}/fullchain.pem"
+LE_KEY="/etc/letsencrypt/live/${DOMAIN}/privkey.pem"
 
 sudo apt update
 sudo apt install -y nginx snapd openssl
@@ -76,6 +78,13 @@ sudo certbot --nginx \
   --redirect \
   -m "$EMAIL" \
   -d "$DOMAIN"
+
+if [ ! -f "$LE_CERT" ] || [ ! -f "$LE_KEY" ]; then
+  echo "Warning: SSL certificate for ${DOMAIN} was not found. Skipping custom nginx.conf copy."
+  echo "Ensure DNS points to this server and rerun certbot when ready."
+  sudo systemctl reload nginx
+  exit 0
+fi
 
 if [ -f "$NGINX_SRC_CONF" ]; then
   sudo cp "$NGINX_SRC_CONF" /etc/nginx/nginx.conf
