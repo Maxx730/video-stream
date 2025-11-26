@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
 if [ $# -lt 2 ]; then
   echo "Usage: $0 <domain> <email> [site_root=/var/www/<domain>/html]" >&2
   exit 1
@@ -11,16 +9,11 @@ fi
 DOMAIN="$1"
 EMAIL="$2"
 SITE_ROOT="${3:-/var/www/${DOMAIN}/html}"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+NGINX_SRC_CONF="${SCRIPT_DIR}/nginx.conf"
 
 sudo apt update
 sudo apt install -y nginx snapd
-
-NGINX_SRC_CONF="${SCRIPT_DIR}/nginx.conf"
-if [ -f "$NGINX_SRC_CONF" ]; then
-  sudo cp "$NGINX_SRC_CONF" /etc/nginx/nginx.conf
-else
-  echo "Warning: ${NGINX_SRC_CONF} not found; skipping nginx.conf copy" >&2
-fi
 
 sudo mkdir -p "$SITE_ROOT"
 sudo chown -R $USER:$USER "$SITE_ROOT"
@@ -65,5 +58,13 @@ sudo certbot --nginx \
   -m "$EMAIL" \
   -d "$DOMAIN"
 
-sudo systemctl reload nginx
+if [ -f "$NGINX_SRC_CONF" ]; then
+  sudo cp "$NGINX_SRC_CONF" /etc/nginx/nginx.conf
+  sudo nginx -t
+  sudo systemctl reload nginx
+else
+  echo "Warning: ${NGINX_SRC_CONF} not found; skipping nginx.conf copy" >&2
+  sudo systemctl reload nginx
+fi
+
 echo "NGINX + SSL ready for ${DOMAIN}. Remember to point DNS A/AAAA records to this server."
