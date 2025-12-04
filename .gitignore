@@ -2,3 +2,5 @@
 .DS_Store
 .git
 hls
+node_modules
+**/node_modules
