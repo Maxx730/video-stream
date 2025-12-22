@@ -24,9 +24,11 @@ export default function DebugStats() {
     }
     return (
         <div className='debug-stats'>
-            {renderChannels()}
             {renderErrors()}
+            ----
+            {renderChannels()}
             {renderViewers()}
+            ----
             {channel > -1 && renderChannelPath()}
             {renderCurrentViewer()}
         </div>

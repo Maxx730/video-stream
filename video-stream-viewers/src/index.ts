@@ -9,6 +9,10 @@ type Viewer = {
     current?: boolean
 };
 
+const MOCK_VIEWERS = {
+
+}
+
 const origins = [
     "https://video.clam-tube.com",
     "http://video.clam-tube.com",
@@ -100,15 +104,15 @@ app.post('/join', (req: Request, res: Response) => {
                 channel: channelKey
             });
         }
+        console.info('USER JOINED', `ROOM: ${channelKey}`);
         res.statusCode = 200;
-        res.send(JSON.stringify(viewers));
+        res.json({
+            success: true
+        });
     } catch (err) {
         res.sendStatus(500);
     }
 });
-
-
-
 app.post('/watch', async (req: Request, res: Response) => {
     const currentViewer: Viewer = getRequestViewer(
         getRequestIp(req)
@@ -163,5 +167,7 @@ app.get('/viewcount/:channel', (req: Request, res: Response) => {
         count: getViewerCount(req.params.channel)
     });
 });
+
+
 setInterval(pruneViewers, pruneTimer);
 app.listen(port, () => {});

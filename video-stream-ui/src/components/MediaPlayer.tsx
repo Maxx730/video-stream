@@ -3,6 +3,7 @@ import '../css/MediaPlayer.css';
 import { getSizeValue } from '@/util/values';
 import { useState } from 'react';
 import { Flex, IconButton, Slider } from '@chakra-ui/react';
+import { Tooltip } from "@/components/ui/tooltip"
 import { FaPause, FaPlay, FaVolumeHigh, FaVolumeXmark } from 'react-icons/fa6';
 import { RiFullscreenLine } from "react-icons/ri";
 
@@ -21,22 +22,24 @@ export const MediaPlayer = ({ url, effect = 'NONE', size = 'Normal', playing = t
 
     const renderPlayButton = () => {
         return (
-            <div>
-                <IconButton onClick={() => setPlaying(!playing)} variant={playing ? 'subtle' : 'solid'}>
+            <Tooltip content={playing ? 'Pause' : 'Play'}>
+                <IconButton onClick={() => null} variant={playing ? 'subtle' : 'solid'}>
                     {playing ? <FaPause /> : <FaPlay />}
                 </IconButton>
-            </div>
+            </Tooltip>
         )
     }
 
     const renderVolumeControl = () => {
         return (
             <div className='volume-control-frame'>
-                <IconButton onClick={() => {
-                    setMuted(!muted);
-                }} variant={'subtle'} aria-label="Search database">
-                    {volume > 0.0 && !muted ? <FaVolumeHigh /> : <FaVolumeXmark />}
-                </IconButton>
+                <Tooltip content={muted ? 'Unmute' : 'Mute'}>
+                    <IconButton onClick={() => {
+                        setMuted(!muted);
+                    }} variant={'subtle'} aria-label="Search database">
+                        {volume > 0.0 && !muted ? <FaVolumeHigh /> : <FaVolumeXmark />}
+                    </IconButton>
+                </Tooltip>
             </div>
         )
     }
@@ -65,13 +68,15 @@ export const MediaPlayer = ({ url, effect = 'NONE', size = 'Normal', playing = t
         );
     }
 
-    const renderFullscreenButton = () => {
+    const renderFullscreenControl = () => {
         return (
-            <IconButton onClick={() => {
-                setMuted(!muted);
-            }} variant={'subtle'} aria-label="Search database">
-                <RiFullscreenLine/>
-            </IconButton>  
+            <Tooltip content="Fullscreen">
+                <IconButton onClick={() => {
+                    setMuted(!muted);
+                }} variant={'subtle'} aria-label="Search database">
+                    <RiFullscreenLine/>
+                </IconButton>
+            </Tooltip> 
         )
     }
 
@@ -81,6 +86,7 @@ export const MediaPlayer = ({ url, effect = 'NONE', size = 'Normal', playing = t
                 <div className='control-section'>
                     {renderPlayButton()}
                     {renderVolumeControl()}
+                    {renderFullscreenControl()}
                 </div>
             </Flex>
         )

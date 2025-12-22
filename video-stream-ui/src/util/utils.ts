@@ -21,3 +21,11 @@ export const useIsMobile = (query = "(max-width: 768px)") => {
     }, [query]);
     return isMobile;
 }
+
+export const buildRequestURL = (po: string) => {
+    const isLocal = window.location.host.indexOf('localhost') > -1;
+    const protocol = isLocal ? 'http://' : 'https://';
+    const port = isLocal ? `:${po}` : '';
+    const host = window.location.hostname;
+    return `${protocol}${host}${port}`;
+}

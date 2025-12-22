@@ -1,0 +1,7 @@
+.loading-indicator-frame {
+    position: absolute;
+    top: 18px;
+    left: 0;
+    width: 24px;
+    height: 24px;
+}

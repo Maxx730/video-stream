@@ -1,4 +1,5 @@
-import { createContext, useState, useEffect, useRef } from "react";
+import { createContext, useState, useEffect } from "react";
+import { buildRequestURL } from "@/util/utils";
 
 export interface Channel {
     key: string,
@@ -30,7 +31,7 @@ export interface ServerContext {
 };
 
 const serverContextDefault = {
-    serverIp: "dev.clam-tube.com",
+    serverIp: "localhost",
     serverPort: "3000",
     channels: [],
     currentChannel: null,
@@ -41,6 +42,7 @@ export const serverContextInstance = createContext<any>(serverContextDefault);
 export const CHANNEL_UPDATE_DELTA: number = 30000;
 const VIEW_PING_FREQUENCY: number = 5000;
 const JSON_HEADERS = { 'Content-Type': 'application/json' }
+const USE_MOCKS = true;
 let pingInterval: number | null = null;
 
 export const ServerProvider: React.FC<{
@@ -52,6 +54,8 @@ export const ServerProvider: React.FC<{
     const [channel, setChannel] = useState<number>(-1);
     const [errors, setErrors] = useState(serverContextDefault.errors);
     const [viewers, setViewers] = useState<Array<Viewer>>();
+    const [loading, setLoading] = useState<boolean>(true);
+    const [asyncLoading, setAsyncLoading] = useState<boolean>(false);
 
     const addError = (error: string) => {
         const clonedErrors = JSON.parse(JSON.stringify(errors));
@@ -63,7 +67,7 @@ export const ServerProvider: React.FC<{
 
     // CHANNELS
     const getChannels = async () => {
-        const channelResponse = await fetch(`https://${serverIp}/channels`);
+        const channelResponse = await fetch(`${buildRequestURL('2276')}/${USE_MOCKS ? 'mocks' : 'channels'}`);
         if (!channelResponse.ok) {
             addError("Error loading channels...");
         }
@@ -72,12 +76,12 @@ export const ServerProvider: React.FC<{
         return channels;
     }
     const getChannelURL = () => {
-        return `http://video.clam-tube.com${channels[channel].path}`;
+        return `${channels[channel].path}`;
     }
 
     // VIEWERS
     const getViewers = async () => {
-        const viewersResponse = await fetch(`https://${serverIp}/viewers`);
+        const viewersResponse = await fetch(`${buildRequestURL('2277')}/viewers`);
         if (!viewersResponse.ok) {
             addError('Error loading viewers...');
         }
@@ -85,7 +89,7 @@ export const ServerProvider: React.FC<{
         return data;
     }
     const getPing = async () => {
-        const pingResponse = await fetch(`https://${serverIp}/ping`);
+        const pingResponse = await fetch(`${buildRequestURL('2277')}/ping`);
         if (!pingResponse.ok) {
             addError(`ERROR: Error pinging...`);
         }
@@ -101,7 +105,7 @@ export const ServerProvider: React.FC<{
 
     // ACTIONS
     const join = async (key: string) => {
-            const joinResponse = await fetch(`https://${serverIp}/join`, {
+            const joinResponse = await fetch(`${buildRequestURL('2277')}/join`, {
                 method: 'POST',
                 headers: JSON_HEADERS,
                 body: JSON.stringify({ channel: key })
@@ -115,7 +119,7 @@ export const ServerProvider: React.FC<{
             }
     }
     const watch = async (key: string) => {
-        const watchResponse = await fetch(`https://${serverIp}/watch`, {
+        const watchResponse = await fetch(`${buildRequestURL('2277')}/watch`, {
             method: 'POST',
             headers: JSON_HEADERS,
             body: JSON.stringify({ channel: key })
@@ -123,29 +127,33 @@ export const ServerProvider: React.FC<{
         const data = await watchResponse.json();
         setViewers(data);
     }
-
-    const setup = async () => {
+    const reload = async () => {
+        setLoading(true);
+        load();
+    }
+    const load = async () => {
         try {
             const allChannels = await getChannels();
             if (allChannels && allChannels.length > 0 && Object.hasOwn(allChannels[0] as Object, "key")) {
                 const firstChannel: Channel = allChannels[0] as Channel;
                 await join(firstChannel.key);
                 setChannel(0);
+                setChannels(allChannels as Channel[]);
+                const allViewers = await getViewers();
+                setViewers(allViewers as Viewer[]);
+                pingInterval = setInterval(() => {
+                    const updatedData = getPing();
+                }, VIEW_PING_FREQUENCY);
             }
-            setChannels(allChannels as Channel[]);
-
-            const allViewers = await getViewers();
-            setViewers(allViewers as Viewer[]);
-            pingInterval = setInterval(() => {
-                const updatedData = getPing();
-            }, VIEW_PING_FREQUENCY);
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            setLoading(false);
         } catch(err) {
             addError(`ERROR: ${err}`);
         }
     }
 
     useEffect(() => {
-        setup();
+        //load();
         return () => {
             if (pingInterval) {
                 clearInterval(pingInterval);
@@ -162,7 +170,9 @@ export const ServerProvider: React.FC<{
             channel,
             viewers,
             watch,
-
+            loading,
+            asyncLoading,
+            reload,
             getChannelURL,
             getCurrentViewer
         }}>

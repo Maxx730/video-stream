@@ -1,4 +1,5 @@
 .channel-list-frame {
+    min-width: 240px;
     .channel-item {
         display: flex;
         gap: 12px;
