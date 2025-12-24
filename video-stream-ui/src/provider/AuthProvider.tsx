@@ -83,6 +83,7 @@ export const AuthProvider: React.FC<{
                 password
             })
         });
+        console.log(loginResponse);
         const data = await loginResponse.json();
         return {
             status: loginResponse.status,
