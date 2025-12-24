@@ -73,7 +73,7 @@ export const AuthProvider: React.FC<{
 
     const login = async (email: string, password: string) => {
         const authHostUrl = buildRequestURL('2278');
-        const loginResponse = await fetch(`${authHostUrl}/login`, {
+        const loginResponse = await fetch(`${authHostUrl}/account/login`, {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
