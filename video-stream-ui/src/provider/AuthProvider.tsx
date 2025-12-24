@@ -24,10 +24,15 @@ export interface AuthContextInterface {
     } | AuthError>
     setToken: (token: string) => void,
     login: (email: string, password: string) => any,
-    logout: () => void
+    logout: () => void,
+    setupAuth: () => Promise<{
+        token: string
+    } | AuthError>,
 }
 
+// CONSTANTS
 const TOKEN = 'ctAuth';
+
 const AuthContextDefault = {
     auth: {
         token: null
@@ -46,7 +51,6 @@ export const AuthProvider: React.FC<{
     const checkToken = () => {
         return new Promise(async (resolve, reject) => {
             const authToken = Cookies.get(TOKEN);
-            await new Promise(resolve => setTimeout(resolve, 1000));
             if (authToken) {
                 resolve({
                     token: authToken
@@ -88,7 +92,20 @@ export const AuthProvider: React.FC<{
 
     const logout = async () => {
         await Cookies.remove(TOKEN);
-        window.location.reload();
+        window.location.href = '/login';
+    }
+
+    const setupAuth = () => {
+        return new Promise((res, rej) => {
+            checkToken().then((data: any) => {
+                if (data.hasOwnProperty('err')) {
+                    rej(data);
+                } else {
+                    setAuth(data);
+                    res(data);
+                }
+            });
+        });
     }
 
     return (
@@ -97,7 +114,8 @@ export const AuthProvider: React.FC<{
             login,
             logout,
             checkToken,
-            setToken
+            setToken,
+            setupAuth
         }}>
             {children}
         </AuthContext.Provider>

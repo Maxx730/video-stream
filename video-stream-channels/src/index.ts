@@ -11,20 +11,10 @@ const origins = [
     "http://localhost:3000"
 ]
 const app = express();
-const mockChannels = [
-  {
-    key: 'Channel_1_private',
-    path: 'https://live-hls-abr-cdn.livepush.io/live/bigbuckbunnyclip/index.m3u8'
-  },
-  {
-    key: 'Channel_2',
-    path: 'https://live-hls-abr-cdn.livepush.io/live/bigbuckbunnyclip/index.m3u8'
-  },
-  {
-    key: 'Channel_3',
-    path: 'https://live-hls-abr-cdn.livepush.io/live/bigbuckbunnyclip/index.m3u8'
-  }
-];
+const mockChannels: Array<{
+  key: string,
+  path: string
+}> = [];
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -61,6 +51,7 @@ const parseLiveKeys = (xmlString: string): string[] => {
 
 app.get('/channels', async (req: Request, res: Response) => {
     const useMocks = req.query.mocks;
+    const isDev = req.query.dev || false;
     const token = await extractBearerToken(req);
     const tokenValid = await fetch('http://auth:2278/verify', {
       headers: {
@@ -68,7 +59,7 @@ app.get('/channels', async (req: Request, res: Response) => {
       }
     });
     const validData = await tokenValid.json();
-    const statResult = await fetch('http://rtmp:8080/stat');
+    const statResult = await fetch(isDev ? `${origins[1]}:8080/stat` : 'http://rtmp:8080/stat');
     const data = useMocks ? mockChannels.map(channel => channel.key) : parseLiveKeys(await statResult.text());
     const allowedChannels = data.filter(key => {
       if (key.indexOf('private') > -1) {

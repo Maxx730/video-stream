@@ -59,7 +59,8 @@ export function Login ({ setScreen }: LoginProps) {
                                     if (loginResponse?.status === 200) {
                                         await new Promise(resolve => setTimeout(resolve, 1000));
                                         setToken(loginResponse.token);
-                                        setScreen('main');
+                                        await new Promise(resolve => setTimeout(resolve, 1000));
+                                        window.location.href = '/';
                                     } else {
                                         setError({
                                             status: loginResponse.status,
@@ -121,8 +122,7 @@ export function Login ({ setScreen }: LoginProps) {
     useEffect(() => {
         checkToken().then((data: { token: string }) => {
             if (data.hasOwnProperty('token')) {
-                setToken(data.token);
-                setScreen('main');
+                window.location.href = '/';
             } else {
                 setLoading(false);
             }

@@ -10,7 +10,7 @@ export interface Channel {
 }
 
 export interface ChannelContextValue {
-    getChannels: (mocks?: boolean, token?: string | null) => Promise<Channel[]> | Promise<void>;
+    getChannels: (mocks?: boolean, token?: string | null, dev?: boolean | null) => Promise<Channel[]> | Promise<void>;
     channelsLoading: boolean;
     setChannel: (key: string) => void;
     setChannels: (channels: Array<Channel>) => void;
@@ -35,8 +35,8 @@ export const ChannelProvider: React.FC<{
     const [channels, setChannels] = useState<Array<Channel>>([]);
     const [channel, setChannel] = useState<string | undefined>();
 
-    const getChannels = async (mocks: boolean = false, token: string | null = null) => {
-        const channelResponse = await fetch(`${buildRequestURL('2276')}/${'channels'}${mocks ? `?mocks=true` : ``}`, {
+    const getChannels = async (mocks: boolean = false, token: string | null = null, dev: boolean | null = false) => {
+        const channelResponse = await fetch(`${buildRequestURL('2276')}/${'channels'}${dev ? mocks ? `?mocks=true` : `?dev=true` : ''}`, {
             method: 'GET',
             headers: token ? {
                 'Authorization': `Bearer ${token}`

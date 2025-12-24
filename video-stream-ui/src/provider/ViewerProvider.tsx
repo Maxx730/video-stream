@@ -11,15 +11,19 @@ export interface Viewer {
 export interface ViewerContextInstance {
     viewers: Array<Viewer>,
     getViewers: () => Promise<{ error: string } | Array<Viewer>>,
+    updateViewers: (viewers: Viewer[]) => void,
     join: (key: string) => Promise<boolean>,
-    watch: (key: string) => void
+    watch: (key: string) => void,
+    ping: () => void
 }
 
 export const ViewerContextDefault = {
     viewers: [],
     getViewers: () => Promise.resolve({ error: 'viewer provider not mounted' }),
+    updateViewers: (viewers: Viewer[]) => {},
     join: () => Promise.resolve(false),
-    watch: () => {}
+    watch: () => {},
+    ping: () => {}
 }
 
 const JSON_HEADERS = { 'Content-Type': 'application/json' }
@@ -28,7 +32,7 @@ export const ViewerContext = createContext<ViewerContextInstance>(ViewerContextD
 export const ViewerProvider:React.FC<{
     children: React.ReactNode
 }> = ({ children }) => {
-    const [viewers, setViewers] = useState([]);
+    const [viewers, setViewers] = useState<Viewer[]>([]);
 
     const getViewers = async () => {
         const viewersResponse = await fetch(`${buildRequestURL('2277')}/viewers`);
@@ -59,13 +63,20 @@ export const ViewerProvider:React.FC<{
         const data = await watchResponse.json();
         setViewers(data);
     }
+    const ping = async () => {
+        await fetch(`${buildRequestURL('2277')}/ping`);
+    }
 
     return (
         <ViewerContext.Provider value={{
             viewers,
             getViewers,
             join,
-            watch
+            watch,
+            updateViewers: (viewers: Viewer[]) => {
+                setViewers(viewers);
+            },
+            ping
         }}>
             {children}
         </ViewerContext.Provider>

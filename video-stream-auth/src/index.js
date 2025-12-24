@@ -75,6 +75,15 @@ function authMiddleware(req, res, next) {
   }
 }
 
+function generateJWT(user) {
+  const token = jwt.sign(
+    { id: user.id, email: user.email },
+    JWT_SECRET,
+    { expiresIn: "24h" }
+  );
+  return token;
+}
+
 app.post("/register", async (req, res) => {
   const email = normalizeEmail(req.body.email);
   const password = req.body.password;
@@ -122,13 +131,7 @@ app.post("/login", async (req, res) => {
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
-    const token = jwt.sign(
-      { id: user.id, email: user.email },
-      JWT_SECRET,
-      { expiresIn: "1m" }
-    );
-
-    return res.json({ token });
+    return res.json({ token: generateJWT(user) });
   } catch (err) {
     console.error("Login error", err);
     return res.status(500).json({ error: "Internal server error" });
@@ -142,10 +145,6 @@ app.get("/me", authMiddleware, (req, res) => {
 
 app.get("/verify", authMiddleware, (req, res) => {
   return res.json({ valid: true, user: req.user });
-});
-
-app.get("/logout", authMiddleware, (req, res) => {
-
 });
 
 async function start() {
