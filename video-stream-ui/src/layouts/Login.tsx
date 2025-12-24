@@ -58,6 +58,7 @@ export function Login ({ setScreen }: LoginProps) {
                                 if (loginResponse) {
                                     if (loginResponse?.status === 200) {
                                         await new Promise(resolve => setTimeout(resolve, 1000));
+                                        console.log('working');
                                         setToken(loginResponse.token);
                                         await new Promise(resolve => setTimeout(resolve, 1000));
                                         window.location.href = '/';
