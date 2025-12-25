@@ -227,8 +227,11 @@ export const Main = () => {
                             <UpdateLogs/>
                         </Stack>
                         <Stack alignSelf={'flex-start'}>
-                            <SideContainer updating={refreshing} logout={auth ? logout : undefined} contents={
-                                <ChannelList onChannelSelected={(key) => setChannel(key)} channels={channels} getChannelCount={getChannelCount}/>
+                            <SideContainer updating={refreshing} logout={auth ? logout : undefined} totalCount={viewers.length} contents={
+                                <ChannelList onChannelSelected={async (key) => {
+                                    await join(key);
+                                    setChannel(key);
+                                }} channels={channels} getChannelCount={getChannelCount}/>
                             }/>
                         </Stack>
                     </HStack>

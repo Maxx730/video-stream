@@ -1,15 +1,15 @@
-import { Box, Button, Link, Stack, HStack, Spinner } from "@chakra-ui/react"
+import { Box, Button, Tag, Stack, HStack, Spinner } from "@chakra-ui/react"
 import { MdExitToApp, MdLogin } from "react-icons/md";
-import { useRef } from "react";
 
 
 interface SideContainerProps {
     contents: React.ReactNode,
     logout: (() => void) | undefined | null,
-    updating: boolean | undefined | null
+    updating: boolean | undefined | null,
+    totalCount: number
 }
 
-export const SideContainer = ({ contents, logout, updating }: SideContainerProps) => {
+export const SideContainer = ({ contents, logout, updating, totalCount = 0 }: SideContainerProps) => {
     return (
         <Box width={320}>
             <Stack gap={2}>
@@ -26,6 +26,11 @@ export const SideContainer = ({ contents, logout, updating }: SideContainerProps
                         Sign In
                     </Button>
                     }
+                    <Tag.Root>
+                        <Tag.Label>
+                            {totalCount} Viewer(s)
+                        </Tag.Label>
+                    </Tag.Root>
                 </HStack>
                 {contents}
             </Stack>

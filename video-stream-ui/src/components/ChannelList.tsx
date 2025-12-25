@@ -43,7 +43,7 @@ export const ChannelList = ({ onChannelSelected, getChannelCount, channels }: Ch
                                     <Table.Cell textAlign={"end"}>
                                         <div className="channel-item-tags">
                                             <Tag.Root>
-                                                <Tag.Label>{getChannelCount(channel.key)}</Tag.Label>
+                                                <Tag.Label>{getChannelCount(channel.path)}</Tag.Label>
                                             </Tag.Root>
                                         </div>
                                     </Table.Cell>
