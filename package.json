@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "wasmboy": "^0.7.1"
+  }
+}
