@@ -1,5 +1,6 @@
 import { Box, Button, Link, Stack, HStack, Spinner } from "@chakra-ui/react"
 import { MdExitToApp, MdLogin } from "react-icons/md";
+import { useRef } from "react";
 
 
 interface SideContainerProps {

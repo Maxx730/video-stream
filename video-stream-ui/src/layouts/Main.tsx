@@ -221,7 +221,6 @@ export const Main = () => {
             {
                 (channels.length > 0 && !loading) ? 
                 <Stack>
-                    {JSON.stringify(channel)}
                     <HStack>
                         <Stack gap={12}>
                             <MediaPlayer url={`https://video.clam-tube.com/stream/${channel}.m3u8`}/>
