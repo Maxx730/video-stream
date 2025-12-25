@@ -46,7 +46,7 @@ export const ViewerProvider:React.FC<{
         return Promise.resolve(data);
     }
     const join = async (key: string) => {
-        const joinResponse = await fetch(`${buildRequestURL('2277')}/join`, {
+        const joinResponse = await fetch(`${buildRequestURL('2277')}/join/`, {
             method: 'POST',
             headers: JSON_HEADERS,
             body: JSON.stringify({ channel: key })
