@@ -30,7 +30,7 @@ let refreshInterval: number | undefined
 
 export const Main = () => {
     const { auth, logout, setupAuth } = useContext(AuthContext);
-    const { getChannels, channels, setChannels } = useContext(ChannelContext);
+    const { getChannels, setChannel, channels, setChannels, channel } = useContext(ChannelContext);
     const { updateViewers, getViewers, join, viewers, ping } = useContext(ViewerContext);
 
     const [refreshing, setRefreshing] = useState(false);
@@ -158,12 +158,11 @@ export const Main = () => {
         const channels = await getChannels(false, auth ? auth.token : null, true) as Channel[];
         if (channels.length > 0) {
             const firstChannel: Channel = channels[0];
-            const joined = await join(firstChannel.key);
+            const joined = await join(firstChannel.path);
             if (!joined) {
-                // Display error message that we were not able to 
-                // join the video channel
                 return;
             } else {
+                setChannel(firstChannel.key);
                 const viewerResponse = await getViewers() as { error: string } | Viewer[];
                 if ('error' in viewerResponse) {
                     return;
@@ -222,14 +221,15 @@ export const Main = () => {
             {
                 (channels.length > 0 && !loading) ? 
                 <Stack>
+                    {JSON.stringify(channel)}
                     <HStack>
                         <Stack gap={12}>
-                            <MediaPlayer url={'https://video.clam-tube.com/stream/FishStream.m3u8'}/>
+                            <MediaPlayer url={`https://video.clam-tube.com/stream/${channel}.m3u8`}/>
                             <UpdateLogs/>
                         </Stack>
                         <Stack alignSelf={'flex-start'}>
                             <SideContainer updating={refreshing} logout={auth ? logout : undefined} contents={
-                                <ChannelList onChannelSelected={() => {}} channels={channels} getChannelCount={getChannelCount}/>
+                                <ChannelList onChannelSelected={(key) => setChannel(key)} channels={channels} getChannelCount={getChannelCount}/>
                             }/>
                         </Stack>
                     </HStack>

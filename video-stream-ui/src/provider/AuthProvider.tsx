@@ -98,13 +98,11 @@ export const AuthProvider: React.FC<{
     const setupAuth = () => {
         return new Promise((res, rej) => {
             checkToken().then((data: any) => {
-                if (data.hasOwnProperty('err')) {
-                    rej(data);
-                } else {
+                if (!data.hasOwnProperty('err')) {
                     setAuth(data);
-                    res(data);
                 }
-            });
+                res(data);
+            }).catch(err => rej(err));
         });
     }
 

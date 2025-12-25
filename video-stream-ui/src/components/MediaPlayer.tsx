@@ -9,7 +9,7 @@ import { RiFullscreenLine } from "react-icons/ri";
 
 
 export interface PlayerProps {
-    url: string,
+    url: string | undefined,
     effect?: string,
     size?: string,
     playing?: boolean,
