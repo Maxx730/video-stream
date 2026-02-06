@@ -19,7 +19,7 @@ export const SideContainer = ({ contents, logout, updating, totalCount = 0 }: Si
             <Button onClick={logout} variant={'outline'}>
                 <MdExitToApp/>
                 Sign Out
-            </Button> : <Button onClick={() => {
+            </Button> : <Button disabled={true} onClick={() => {
                 window.location.href = '/login';
             }} variant={'outline'}>
                 <MdLogin/>
