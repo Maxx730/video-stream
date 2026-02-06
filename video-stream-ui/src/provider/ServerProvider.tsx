@@ -42,7 +42,7 @@ export const serverContextInstance = createContext<any>(serverContextDefault);
 export const CHANNEL_UPDATE_DELTA: number = 30000;
 const VIEW_PING_FREQUENCY: number = 5000;
 const JSON_HEADERS = { 'Content-Type': 'application/json' }
-const USE_MOCKS = true;
+const USE_MOCKS = false;
 let pingInterval: number | null = null;
 
 export const ServerProvider: React.FC<{
