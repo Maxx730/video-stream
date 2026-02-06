@@ -224,7 +224,6 @@ export const Main = () => {
                     <HStack gap={6}>
                         <Stack gap={12}>
                             <MediaPlayer url={`https://video.clam-tube.com/stream/${channel}.m3u8`}/>
-                            <UpdateLogs/>
                         </Stack>
                         <Stack alignSelf={'flex-start'}>
                             <SideContainer updating={refreshing} logout={auth ? logout : undefined} totalCount={viewers.length} contents={
