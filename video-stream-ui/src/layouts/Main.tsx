@@ -1,4 +1,4 @@
-import { Stack, SegmentGroup, Flex, ProgressCircle, Text, Spinner, AbsoluteCenter, HStack, Box, Center } from "@chakra-ui/react";
+import { Stack, SegmentGroup, Flex, ProgressCircle, Text, Spinner, AbsoluteCenter, HStack, Box, Center, Switch } from "@chakra-ui/react";
 import { useContext, useState, useEffect, useRef } from "react";
 import { useIsMobile } from "@/util/utils";
 import { getSizeValue } from "@/util/values";
@@ -25,13 +25,13 @@ import { NoChannels } from "@/components/NoChannels";
 import '../css/Main.css';
 
 const screenSizes = ["Small", "Normal", "Large", "Huge"];
-const refreshTime = 5000;
+const refreshTime = 30000;
 let refreshInterval: number | undefined
 
 export const Main = () => {
     const { auth, logout, setupAuth } = useContext(AuthContext);
     const { getChannels, setChannel, channels, setChannels, channel } = useContext(ChannelContext);
-    const { updateViewers, getViewers, join, viewers, ping } = useContext(ViewerContext);
+    const { updateViewers, getViewers, join, viewers, ping, watch } = useContext(ViewerContext);
 
     const [refreshing, setRefreshing] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -217,11 +217,11 @@ export const Main = () => {
         )
     }
     return (
-        <div className={`main-frame ${isMobile && 'mobile-device'}`}>
+        <div>
             {
                 (channels.length > 0 && !loading) ? 
-                <Stack>
-                    <HStack>
+                <Stack padding={12}>
+                    <HStack gap={6}>
                         <Stack gap={12}>
                             <MediaPlayer url={`https://video.clam-tube.com/stream/${channel}.m3u8`}/>
                             <UpdateLogs/>
@@ -229,7 +229,7 @@ export const Main = () => {
                         <Stack alignSelf={'flex-start'}>
                             <SideContainer updating={refreshing} logout={auth ? logout : undefined} totalCount={viewers.length} contents={
                                 <ChannelList onChannelSelected={async (key) => {
-                                    await join(key);
+                                    await watch(key);
                                     setChannel(key);
                                 }} channels={channels} getChannelCount={getChannelCount}/>
                             }/>

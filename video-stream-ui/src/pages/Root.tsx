@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { Theme } from '@chakra-ui/react';
 
 // PROVIDERS
 import { ServerProvider } from "@/provider/ServerProvider";
 import { AuthProvider } from "@/provider/AuthProvider";
 import { ChannelProvider } from '@/provider/ChannelProvider';
 import { ViewerProvider } from '@/provider/ViewerProvider';
+import { SettingsProvider } from '@/provider/SettingsProvider';
 // SCREENS
 import { Main } from "../layouts/Main";
 import { Login } from "../layouts/Login";
@@ -30,13 +32,17 @@ export const Root = ({ screen = 'main' }: RootProps) => {
 
     return (
         <AuthProvider>
-            <ChannelProvider>
-                <ViewerProvider>
-                    <ServerProvider>
-                        {renderScreen()}
-                    </ServerProvider>
-                </ViewerProvider>
-            </ChannelProvider>
+            <SettingsProvider>
+                <ChannelProvider>
+                    <ViewerProvider>
+                        <ServerProvider>
+                            <Theme>
+                                {renderScreen()}
+                            </Theme>
+                        </ServerProvider>
+                    </ViewerProvider>
+                </ChannelProvider>
+            </SettingsProvider>
         </AuthProvider>
     )
 }
