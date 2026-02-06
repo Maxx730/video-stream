@@ -153,6 +153,7 @@ app.get('/ping', (req: Request, res: Response) => {
             currentViewer.current = true;
         }
     }
+    console.log(viewers)
     res.send(JSON.stringify(viewers.map(viewer => {
         return {
             name: viewer.name,
