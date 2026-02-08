@@ -6,8 +6,11 @@ import type { MovieQuote } from '../data/empty_quotes';
 import { serverContextInstance } from '@/provider/ServerProvider';
 import '../css/NoChannels.css';
 
-export const NoChannels = () => {
-    const { loading, reload } = useContext(serverContextInstance);
+export interface NoChannelsProps {
+    onReloadPressed: () => void
+}
+
+export const NoChannels = ({ onReloadPressed = () => {} }: NoChannelsProps) => {
     const [randomQuote, setRandomQuote] = useState<MovieQuote>({
         quote: "",
         source: ""
@@ -26,7 +29,7 @@ export const NoChannels = () => {
                         You're the star of the show... but the audience hasn't arrived yet. No one else is streaming right now!
                     </Text>
                     <HStack>
-                        <Button onClick={reload}>
+                        <Button onClick={onReloadPressed}>
                             <TbRefresh/>
                             Refresh
                         </Button>

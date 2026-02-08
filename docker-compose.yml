@@ -16,6 +16,15 @@ services:
     ports:
       - "5432:5432"
 
+  log:
+    build: ./video-stream-log
+    container_name: log
+    ports:
+      - "2279:2279"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
   auth:
     build: ./video-stream-auth
     container_name: auth

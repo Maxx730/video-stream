@@ -34,7 +34,7 @@ app.use(cors({
 
 const port = process.env.PORT || 2277;
 const viewers: Array<Viewer> = [];
-const pruneTimer: number = 10000;
+const pruneTimer: number = 30000;
 const pruneTimeout: number = 300000;
 
 const randomNumber = (): number => {
@@ -56,7 +56,7 @@ const pruneViewers = () => {
         const timeChange = new Date().getTime() - viewer.ping.getTime();
         if (timeChange >= pruneTimeout) {
             const viewerId = viewers.indexOf(viewer);
-            logEvent(`REMOVING VIEWER - ${viewerId} : ${timeChange}`);
+            logEvent(`REMOVING VIEWER - ${viewerId}`);
             viewers.splice(viewerId, 1);
         }
     });
@@ -96,12 +96,14 @@ app.post('/join', (req: Request, res: Response) => {
         const viewerIp: string | undefined = cleanIp(req.ip as string);
         const isAlreadyViewer = viewers.some(v => v.ip === viewerIp);
         const channelKey: string | undefined = req.body.channel;
-        viewers.push({
-            ip: viewerIp,
-            name: `User-${randomNumber()}`,
-            ping: new Date(),
-            channel: channelKey
-        });
+        if (viewerIp && !isAlreadyViewer) {
+            viewers.push({
+                ip: viewerIp,
+                name: `User-${randomNumber()}`,
+                ping: new Date(),
+                channel: channelKey
+            });
+        }
         console.info('USER JOINED', `ROOM: ${channelKey}`);
         res.statusCode = 200;
         res.json({
