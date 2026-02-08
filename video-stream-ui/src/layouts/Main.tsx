@@ -118,37 +118,6 @@ export const Main = () => {
             </Stack>
         );
     }
-    const renderContentScreen = () => {
-        return (
-            <div className={`main-contents`}>
-                <div className={`main-content`}>
-                    <div className="content-column"  style={{
-                        width: getSizeValue(screenSize)
-                    }}>
-                        {channels.length > 0 ? renderPlayerScreen() : <NoChannels/>}
-                    </div>
-                    {!isBigScreen() && channels.length > 0 &&   
-                    <div className="content-column" style={{
-                        width: '320px'
-                    }}>
-                        <SideTabs onChannelSelected={key => {
-                            watch(key);
-                        }}/>
-                    </div>}
-                </div>
-            </div>
-        )
-    }
-    const renderLoading = () => {
-        return (
-            <AbsoluteCenter>
-                <Stack alignItems={'center'}>
-                    <Spinner/>
-                    <Text>Loading...</Text>
-                </Stack>
-            </AbsoluteCenter>
-        )
-    }
 
     // UTIL
     const isBigScreen = () => {

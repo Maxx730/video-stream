@@ -114,12 +114,17 @@ app.post('/join', (req: Request, res: Response) => {
     }
 });
 app.post('/watch', async (req: Request, res: Response) => {
-    const currentViewer: Viewer = getRequestViewer(
-        getRequestIp(req)
-    ) as Viewer;
-    currentViewer.channel = req.body.channel;
-    var userList: String = await listViewers(currentViewer != null)
-    res.send(userList);
+    try {
+        const currentViewer: Viewer = getRequestViewer(
+            getRequestIp(req)
+        ) as Viewer;
+        currentViewer.channel = req.body.channel;
+        var userList: String = await listViewers(currentViewer != null)
+        res.send(userList);
+    } catch (err) {
+        console.error(err);
+        res.sendStatus(500);
+    }
 });
 app.post('/update', (req: Request, res: Response) => {
     const ip: string | undefined = getRequestIp(req);

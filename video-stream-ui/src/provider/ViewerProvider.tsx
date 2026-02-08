@@ -55,7 +55,7 @@ export const ViewerProvider:React.FC<{
         return Promise.resolve(data?.success);
     }
     const watch = async (key: string) => {
-        const watchResponse = await fetch(`${buildRequestURL('2277')}/watch`, {
+        const watchResponse = await fetch(`${buildRequestURL('2277')}/watch/`, {
             method: 'POST',
             headers: JSON_HEADERS,
             body: JSON.stringify({ channel: key })
