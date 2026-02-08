@@ -125,7 +125,7 @@ export const Main = () => {
     }
 
     const setup = async (auth: AuthInfo) => {
-        const channels = await getChannels(false, auth ? auth.token : null, true) as Channel[];
+        const channels = await getChannels(false, auth ? auth.token : null, false) as Channel[];
         if (channels.length > 0) {
             const firstChannel: Channel = channels[0];
             const joined = await join(firstChannel.path);
@@ -146,7 +146,7 @@ export const Main = () => {
         setLoading(false);
         refreshInterval = setInterval(async () => {
             setRefreshing(true);
-            const channels = await getChannels(false, auth ? auth.token : null, true) as Channel[];
+            const channels = await getChannels(false, auth ? auth.token : null, false) as Channel[];
             const viewerResponse = await getViewers() as { error: string } | Viewer[];
             await new Promise(resolve => setTimeout(resolve, 3000));
             await ping();
