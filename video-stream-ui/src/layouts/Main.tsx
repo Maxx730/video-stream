@@ -3,7 +3,6 @@ import { useContext, useState, useEffect, useRef } from "react";
 
 // TYPES
 import type { Channel } from "@/provider/ChannelProvider";
-import type { Viewer } from "@/provider/ViewerProvider";
 import type { AuthInfo, AuthError } from "@/provider/AuthProvider";
 
 // CONTEXTS
@@ -28,7 +27,7 @@ let refreshInterval: number | undefined
 export const Main = () => {
     const { auth, logout, setupAuth } = useContext(AuthContext);
     const { getChannels, setChannel, channels, setChannels, channel } = useContext(ChannelContext);
-    const { updateViewers, getViewers, join, viewers, ping, watch } = useContext(ViewerContext);
+    const { join, viewers, ping, watch } = useContext(ViewerContext);
 
     const [refreshing, setRefreshing] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -37,17 +36,12 @@ export const Main = () => {
         const channels = await getChannels(false, auth ? auth.token : null, true) as Channel[];
         if (channels.length > 0) {
             const firstChannel: Channel = channels[0];
-            const joined = await join(firstChannel.path);
+            const joined = await join(firstChannel.key);
             if (!joined) {
                 return;
             } else {
                 setChannel(firstChannel.key);
-                const viewerResponse = await getViewers() as { error: string } | Viewer[];
-                if ('error' in viewerResponse) {
-                    return;
-                } else {
-                    
-                }
+                await ping();
             }
         }
         setChannels(channels);
@@ -56,10 +50,7 @@ export const Main = () => {
         refreshInterval = setInterval(async () => {
             setRefreshing(true);
             const channels = await getChannels(false, auth ? auth.token : null, true) as Channel[];
-            const viewerResponse = await getViewers() as { error: string } | Viewer[];
-            await new Promise(resolve => setTimeout(resolve, 3000));
             await ping();
-            updateViewers(viewerResponse as Viewer[]);
             setChannels(channels);
             setRefreshing(false);
         }, refreshTime);

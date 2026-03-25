@@ -14,7 +14,7 @@ export interface ViewerContextInstance {
     updateViewers: (viewers: Viewer[]) => void,
     join: (key: string) => Promise<boolean>,
     watch: (key: string) => void,
-    ping: () => void
+    ping: () => Promise<Viewer[]>
 }
 
 export const ViewerContextDefault = {
@@ -23,7 +23,7 @@ export const ViewerContextDefault = {
     updateViewers: (viewers: Viewer[]) => {},
     join: () => Promise.resolve(false),
     watch: () => {},
-    ping: () => {}
+    ping: () => Promise.resolve([] as Viewer[])
 }
 
 const JSON_HEADERS = { 'Content-Type': 'application/json' }
@@ -63,8 +63,11 @@ export const ViewerProvider:React.FC<{
         const data = await watchResponse.json();
         setViewers(data);
     }
-    const ping = async () => {
-        await fetch(`${buildRequestURL('2277')}/ping`);
+    const ping = async (): Promise<Viewer[]> => {
+        const response = await fetch(`${buildRequestURL('2277')}/ping`);
+        const data = await response.json();
+        setViewers(data);
+        return data;
     }
 
     return (
