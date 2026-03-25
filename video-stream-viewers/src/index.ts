@@ -65,11 +65,12 @@ const logEvent = (name: string) => {
     console.log(`--- ${name} ---`);
 }
 const cleanIp = (ip: string): string => {
-    return ip.substring(7);
+    return ip.replace(/^::ffff:/, '');
 }
-const getRequestIp = (req: Request) => {
-    const viewerIp: string | undefined = req.ip;
-    return cleanIp(viewerIp as string);
+const getRequestIp = (req: Request): string => {
+    const realIp = req.headers['x-real-ip'];
+    const ip = (Array.isArray(realIp) ? realIp[0] : realIp) || req.ip || '';
+    return cleanIp(ip);
 }
 const getRequestViewer = (ip: string) => {
     if (ip) {
@@ -115,12 +116,13 @@ app.post('/join', (req: Request, res: Response) => {
 });
 app.post('/watch', async (req: Request, res: Response) => {
     try {
-        const currentViewer: Viewer = getRequestViewer(
-            getRequestIp(req)
-        ) as Viewer;
+        const currentViewer = getRequestViewer(getRequestIp(req));
+        if (!currentViewer) {
+            res.sendStatus(404);
+            return;
+        }
         currentViewer.channel = req.body.channel;
-        var userList: String = await listViewers(currentViewer != null)
-        res.send(userList);
+        res.send(listViewers(true));
     } catch (err) {
         console.error(err);
         res.sendStatus(500);

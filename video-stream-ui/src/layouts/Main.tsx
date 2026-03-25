@@ -105,7 +105,6 @@ export const Main = () => {
                             <MediaPlayer url={`https://video.clam-tube.com/stream/${channel}.m3u8`}/>
                         </Stack>
                         <Stack alignSelf={'flex-start'}>
-                            <MarqueeMessage message="Second Fish Cam OTW" />
                             <SideContainer updating={refreshing} logout={auth ? logout : undefined} totalCount={viewers.length} contents={
                                 <ChannelList onChannelSelected={async (key) => {
                                     await watch(key);

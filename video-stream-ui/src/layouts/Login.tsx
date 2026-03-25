@@ -84,7 +84,7 @@ export function Login ({ setScreen }: LoginProps) {
                                 <Separator flex="1" />
                             </HStack>
                             <Center>
-                                <Link>
+                                <Link onClick={() => { window.location.href = '/'; }}>
                                     Continue as Guest
                                 </Link>
                             </Center>

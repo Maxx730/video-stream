@@ -24,7 +24,11 @@ app.use(cors({
 
 // Config
 const PORT = process.env.PORT || 2278;
-const JWT_SECRET = process.env.JWT_SECRET || "change-me-in-prod";
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  console.error("JWT_SECRET environment variable is required");
+  process.exit(1);
+}
 const DB_CONFIG = {
   host: process.env.POSTGRES_HOST || "postgres",
   port: Number(process.env.POSTGRES_PORT || 5432),
@@ -111,7 +115,7 @@ app.post("/register", async (req, res) => {
   }
 });
 
-app.post("/login", async (req, res) => {
+app.post(["/login", "/account/login"], async (req, res) => {
   const email = normalizeEmail(req.body.email);
   const password = req.body.password;
 

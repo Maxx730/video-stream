@@ -25,6 +25,9 @@ app.use(cors({
 }));
 
 const port = 2276;
+const privateChannels: Set<string> = new Set(
+  (process.env.PRIVATE_CHANNELS || '').split(',').map(s => s.trim()).filter(Boolean)
+);
 
 const logEvent = (name: string) => {
     console.log(`--- ${name} ---`);
@@ -53,17 +56,23 @@ app.get('/channels', async (req: Request, res: Response) => {
     const useMocks = req.query.mocks;
     const isDev = req.query.dev || false;
     const token = await extractBearerToken(req);
-    const tokenValid = await fetch('http://auth:2278/verify', {
-      headers: {
-        Authorization: `Bearer ${token}`
+    let isAuthenticated = false;
+    try {
+      const tokenValid = await fetch('http://auth:2278/verify', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      if (tokenValid.ok) {
+        const validData = await tokenValid.json();
+        isAuthenticated = validData.valid === true;
       }
-    });
-    const validData = await tokenValid.json();
+    } catch {}
     const statResult = await fetch(isDev ? `${origins[1]}:8080/stat` : 'http://rtmp:8080/stat');
     const data = useMocks ? mockChannels.map(channel => channel.key) : parseLiveKeys(await statResult.text());
     const allowedChannels = data.filter(key => {
-      if (key.indexOf('private') > -1) {
-        return validData.valid;
+      if (key.indexOf('private') > -1 || privateChannels.has(key)) {
+        return isAuthenticated;
       }
       return true;
     });

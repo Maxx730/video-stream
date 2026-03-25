@@ -65,7 +65,7 @@ export const AuthProvider: React.FC<{
     }
 
     const setToken = (token: string) => {
-        Cookies.set(TOKEN, token);
+        Cookies.set(TOKEN, token, { secure: true, sameSite: 'strict' });
         setAuth({
             token
         });
