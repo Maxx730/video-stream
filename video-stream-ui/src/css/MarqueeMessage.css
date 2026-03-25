@@ -1,0 +1,35 @@
+/* Marquee.module.css */
+.marqueeContainer {
+    overflow: hidden;
+    user-select: none;
+    display: flex;
+    gap: 20px;
+    padding: 10px 0;
+    background: #121212;
+    border: solid 1px #222222;
+    border-radius: 8px;
+}
+
+.marqueeContent {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-around;
+  gap: 20px;
+  min-width: 100%;
+  animation: scroll 20s linear infinite;
+}
+
+/* The magic happens here */
+@keyframes scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+/* Optional: Pause on hover */
+.marqueeContainer:hover .marqueeContent {
+  animation-play-state: paused;
+}
