@@ -1,7 +1,5 @@
-import { Stack, SegmentGroup, Flex, ProgressCircle, Text, Spinner, AbsoluteCenter, HStack, Box, Center, Switch } from "@chakra-ui/react";
+import { Stack, Text, Spinner, HStack, Box, Center } from "@chakra-ui/react";
 import { useContext, useState, useEffect, useRef } from "react";
-import { useIsMobile } from "@/util/utils";
-import { getSizeValue } from "@/util/values";
 
 // TYPES
 import type { Channel } from "@/provider/ChannelProvider";
@@ -14,13 +12,11 @@ import { AuthContext } from "@/provider/AuthProvider";
 import { ViewerContext } from "@/provider/ViewerProvider";
 
 // COMPONENTS
-import { SideTabs } from "@/components/SideTabs";
 import { MediaPlayer } from '../components/MediaPlayer';
-import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { ChannelList } from "@/components/ChannelList";
 import { SideContainer } from "@/components/SideContainer";
-import { UpdateLogs } from "@/components/UpdateLogs";
 import { NoChannels } from "@/components/NoChannels";
+import { MarqueeMessage } from "@/components/MarqueeMessage";
 
 import '../css/Main.css';
 
@@ -37,95 +33,8 @@ export const Main = () => {
     const [refreshing, setRefreshing] = useState(false);
     const [loading, setLoading] = useState(true);
 
-    const [effectState, setEffectState] = useState<string>("NONE");
-    const [screenSize, setScreenSize] = useState<string>(screenSizes[0]);
-    const changeRef = useRef<NodeJS.Timeout | null>(null);
-    const [playing, setPlaying] = useState(true);
-    const isMobile = useIsMobile();
-    const [params, setParams] = useState<string | Array<string>>([]);
-
-    // RENDER METHODS
-    const renderTop = () => {
-        return (
-            <div className="top-frame">
-                {asyncLoading && <LoadingIndicator />}
-                <div className="top-section center">
-                    <SegmentGroup.Root defaultValue={screenSize} onValueChange={details => {
-                        setScreenSize(details.value || "Normal");
-                    }}>
-                        <SegmentGroup.Indicator />
-                        <SegmentGroup.Items items={screenSizes} />
-                    </SegmentGroup.Root>
-                </div>
-            </div>
-        )
-    }
-    const renderControls = () => {
-        return (
-            <div className="header-frame">
-                <Flex justify={"space-between"}>
-                    <div>
-                        
-                    </div>
-                    <div>
-
-                    </div>
-                    <Stack>
-                        {
-                            channels && channels.length > 0 && renderChannelControls()
-                        }
-                    </Stack>
-                </Flex>
-            </div>
-        )
-    }
-    const renderPlayer = () => {
-        return <MediaPlayer isMobile={isMobile} playing={playing} effect={effectState} size={screenSize} url={getChannelURL()}/>;
-    }
-    const renderChannelControls = () => {
-        return (
-            <>
-
-            </>
-        )
-    }
-    const renderBusyScreen = () => {
-        return (
-            <div className="busy-frame">
-                <Stack align={'center'}>
-                    <ProgressCircle.Root value={null} size="sm">
-                        <ProgressCircle.Circle>
-                            <ProgressCircle.Track />
-                            <ProgressCircle.Range strokeLinecap={'round'} />
-                        </ProgressCircle.Circle>
-                    </ProgressCircle.Root>
-                    <Text>
-                        Loading...
-                    </Text>
-                </Stack>
-            </div>
-        )
-    }
-    const renderPlayerScreen = () => {
-        if (loading) {
-            return renderBusyScreen();
-        }
-        return (
-            <Stack>
-                {!isMobile && renderTop()}
-                {renderPlayer()}
-                {renderControls()}
-            </Stack>
-        );
-    }
-
-    // UTIL
-    const isBigScreen = () => {
-        return (screenSize === "Large" || screenSize === "Huge")
-    }
-
     const setup = async (auth: AuthInfo) => {
-        const channels = await getChannels(false, auth ? auth.token : null, false) as Channel[];
+        const channels = await getChannels(false, auth ? auth.token : null, true) as Channel[];
         if (channels.length > 0) {
             const firstChannel: Channel = channels[0];
             const joined = await join(firstChannel.path);
@@ -146,7 +55,7 @@ export const Main = () => {
         setLoading(false);
         refreshInterval = setInterval(async () => {
             setRefreshing(true);
-            const channels = await getChannels(false, auth ? auth.token : null, false) as Channel[];
+            const channels = await getChannels(false, auth ? auth.token : null, true) as Channel[];
             const viewerResponse = await getViewers() as { error: string } | Viewer[];
             await new Promise(resolve => setTimeout(resolve, 3000));
             await ping();
@@ -196,6 +105,7 @@ export const Main = () => {
                             <MediaPlayer url={`https://video.clam-tube.com/stream/${channel}.m3u8`}/>
                         </Stack>
                         <Stack alignSelf={'flex-start'}>
+                            <MarqueeMessage message="Second Fish Cam OTW" />
                             <SideContainer updating={refreshing} logout={auth ? logout : undefined} totalCount={viewers.length} contents={
                                 <ChannelList onChannelSelected={async (key) => {
                                     await watch(key);
