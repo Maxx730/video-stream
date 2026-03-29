@@ -38,6 +38,7 @@ export const Main = () => {
             const firstChannel: Channel = channels[0];
             const joined = await join(firstChannel.key);
             if (!joined) {
+                setLoading(false);
                 return;
             } else {
                 setChannel(firstChannel.key);

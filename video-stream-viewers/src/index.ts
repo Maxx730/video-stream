@@ -159,4 +159,9 @@ app.get('/viewcount/:channel', (req: Request, res: Response) => {
 
 
 setInterval(pruneViewers, pruneTimer);
-app.listen(port, () => {});
+
+export { app, viewers, pruneViewers, listViewers, getViewerCount };
+
+if (require.main === module) {
+    app.listen(port, () => {});
+}
