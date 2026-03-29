@@ -13,6 +13,7 @@ export const App = () => {
           <Route path="/" element={<Root screen={'main'}/>}/>
           <Route path="/channel/:channelName" element={<Root screen={'channel'}/>}/>
           <Route path="/login" element={<Root screen={'login'}/>}/>
+          <Route path="/signup" element={<Root screen={'signup'}/>}/>
         </Routes>
       </Router>
     </Provider>

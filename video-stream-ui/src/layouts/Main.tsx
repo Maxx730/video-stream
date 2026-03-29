@@ -14,6 +14,7 @@ import { ViewerContext } from "@/provider/ViewerProvider";
 import { MediaPlayer } from '../components/MediaPlayer';
 import { ChannelList } from "@/components/ChannelList";
 import { SideContainer } from "@/components/SideContainer";
+import { Comments } from "@/components/Comments";
 import { NoChannels } from "@/components/NoChannels";
 import { MarqueeMessage } from "@/components/MarqueeMessage";
 
@@ -29,7 +30,6 @@ export const Main = () => {
     const { getChannels, setChannel, channels, setChannels, channel } = useContext(ChannelContext);
     const { join, viewers, ping, watch } = useContext(ViewerContext);
 
-    const [refreshing, setRefreshing] = useState(false);
     const [loading, setLoading] = useState(true);
 
     const setup = async (auth: AuthInfo) => {
@@ -49,11 +49,9 @@ export const Main = () => {
         await new Promise(resolve => setTimeout(resolve, 3000));
         setLoading(false);
         refreshInterval = setInterval(async () => {
-            setRefreshing(true);
             const channels = await getChannels(false, auth ? auth.token : null, true) as Channel[];
             await ping();
             setChannels(channels);
-            setRefreshing(false);
         }, refreshTime);
     }
 
@@ -75,7 +73,7 @@ export const Main = () => {
 
     if (loading) {
         return (
-            <Center>
+            <Center minH="100vh">
                 <Box bg='bg' shadow='md' borderWidth={1} borderRadius={12} padding={8}>
                     <Stack gap={4}>
                         <Center>
@@ -92,17 +90,18 @@ export const Main = () => {
             {
                 (channels.length > 0 && !loading) ? 
                 <Stack padding={12}>
-                    <HStack gap={6}>
+                    <HStack gap={6} align="flex-start">
                         <Stack gap={12}>
-                            <MediaPlayer url={`https://video.clam-tube.com/stream/${channel}.m3u8`}/>
+                            <MediaPlayer url={`https://video.clam-tube.com/stream/${channel}.m3u8`} title={channel}/>
                         </Stack>
-                        <Stack alignSelf={'flex-start'}>
-                            <SideContainer updating={refreshing} logout={auth ? logout : undefined} totalCount={viewers.length} contents={
+                        <Stack alignSelf={'flex-start'} gap={4}>
+                            <SideContainer logout={auth ? logout : undefined} totalCount={viewers.length} contents={
                                 <ChannelList onChannelSelected={async (key) => {
                                     await watch(key);
                                     setChannel(key);
-                                }} channels={channels} getChannelCount={getChannelCount}/>
+                                }} channels={channels} getChannelCount={getChannelCount} activeChannel={channel}/>
                             }/>
+                            <Comments channel={channel} />
                         </Stack>
                     </HStack>
                 </Stack> : <NoChannels onReloadPressed={async () => {

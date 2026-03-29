@@ -90,6 +90,17 @@ export const AuthProvider: React.FC<{
         };
     }
 
+    const register = async (email: string, password: string) => {
+        const authHostUrl = buildRequestURL('2278');
+        const response = await fetch(`${authHostUrl}/account/register/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+        const data = await response.json();
+        return { status: response.status, ...data };
+    }
+
     const logout = async () => {
         await Cookies.remove(TOKEN);
         window.location.href = '/login';
@@ -110,6 +121,7 @@ export const AuthProvider: React.FC<{
         <AuthContext.Provider value={{
             auth,
             login,
+            register,
             logout,
             checkToken,
             setToken,

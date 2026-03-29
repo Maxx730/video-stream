@@ -88,6 +88,12 @@ export function Login ({ setScreen }: LoginProps) {
                                     Continue as Guest
                                 </Link>
                             </Center>
+                            <Center>
+                                <HStack gap={1}>
+                                    <Text fontSize="sm">Don't have an account?</Text>
+                                    <Link fontSize="sm" onClick={() => { window.location.href = '/signup'; }}>Sign Up</Link>
+                                </HStack>
+                            </Center>
                         </Stack>                        
                     </Stack>
                 </Card.Description>
@@ -130,8 +136,10 @@ export function Login ({ setScreen }: LoginProps) {
     }, []);
 
     return (
-        <Card.Root width={360}>
-            {loading ? renderLoading() : renderLogin()}
-        </Card.Root>
+        <Center minH="100vh">
+            <Card.Root width={360}>
+                {loading ? renderLoading() : renderLogin()}
+            </Card.Root>
+        </Center>
     )
 }

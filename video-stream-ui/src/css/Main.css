@@ -8,8 +8,9 @@
 
 body {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-items: center;
+    scrollbar-gutter: stable;
 }
 
 .main-frame {

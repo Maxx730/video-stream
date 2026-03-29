@@ -48,6 +48,21 @@ services:
     depends_on:
       - channels
 
+  comments:
+    build: ./video-stream-comments
+    container_name: comments
+    ports:
+      - "2279:2279"
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_USER: auth
+      POSTGRES_PASSWORD: authpass
+      POSTGRES_DB: authdb
+      POSTGRES_PORT: 5432
+    depends_on:
+      postgres:
+        condition: service_healthy
+
   rtmp:
     build: ./video-stream-rtmp
     container_name: rtmp
