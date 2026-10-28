@@ -68,8 +68,14 @@ app.get('/channels', async (req: Request, res: Response) => {
         isAuthenticated = validData.valid === true;
       }
     } catch {}
-    const statResult = await fetch(isDev ? `${origins[1]}:8080/stat` : 'http://rtmp:8080/stat');
-    const data = useMocks ? mockChannels.map(channel => channel.key) : parseLiveKeys(await statResult.text());
+    let liveKeys: string[] = [];
+    try {
+      const statResult = await fetch(isDev ? `${origins[1]}:8080/stat` : 'http://rtmp:8080/stat');
+      liveKeys = parseLiveKeys(await statResult.text());
+    } catch {
+      // rtmp unreachable (e.g. restarting): report no live channels rather than crashing
+    }
+    const data = useMocks ? mockChannels.map(channel => channel.key) : liveKeys;
     const allowedChannels = data.filter(key => {
       if (key.indexOf('private') > -1 || privateChannels.has(key)) {
         return isAuthenticated;
