@@ -33,7 +33,7 @@ export const Main = () => {
     const [loading, setLoading] = useState(true);
 
     const setup = async (auth: AuthInfo) => {
-        const channels = await getChannels(false, auth ? auth.token : null, true) as Channel[];
+        const channels = await getChannels(false, auth ? auth.token : null, import.meta.env.DEV) as Channel[];
         if (channels.length > 0) {
             const firstChannel: Channel = channels[0];
             const joined = await join(firstChannel.key);
@@ -49,7 +49,7 @@ export const Main = () => {
         await new Promise(resolve => setTimeout(resolve, 3000));
         setLoading(false);
         refreshInterval = setInterval(async () => {
-            const channels = await getChannels(false, auth ? auth.token : null, true) as Channel[];
+            const channels = await getChannels(false, auth ? auth.token : null, import.meta.env.DEV) as Channel[];
             await ping();
             setChannels(channels);
         }, refreshTime);
@@ -105,7 +105,7 @@ export const Main = () => {
                         </Stack>
                     </HStack>
                 </Stack> : <NoChannels onReloadPressed={async () => {
-                    const channels = await getChannels(false, auth ? auth.token : null, true) as Channel[];
+                    const channels = await getChannels(false, auth ? auth.token : null, import.meta.env.DEV) as Channel[];
                     setChannels(channels);
                 }}/>
             }
