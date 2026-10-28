@@ -10,7 +10,7 @@ export default defineConfig({
     proxy: {
       // Mirrors the /highscores/ location in nginx.conf
       '/highscores': {
-        target: 'http://navalblitz.cepholotech.com:8081',
+        target: 'https://navalblitz.cepholotech.com',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/highscores\/?/, '/scores'),
       },
