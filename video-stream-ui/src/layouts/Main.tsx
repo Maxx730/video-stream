@@ -14,7 +14,7 @@ import { ViewerContext } from "@/provider/ViewerProvider";
 import { MediaPlayer } from '../components/MediaPlayer';
 import { ChannelList } from "@/components/ChannelList";
 import { SideContainer } from "@/components/SideContainer";
-import { Comments } from "@/components/Comments";
+import { Highscores } from "@/components/Highscores";
 import { NoChannels } from "@/components/NoChannels";
 import { MarqueeMessage } from "@/components/MarqueeMessage";
 
@@ -101,7 +101,7 @@ export const Main = () => {
                                     setChannel(key);
                                 }} channels={channels} getChannelCount={getChannelCount} activeChannel={channel}/>
                             }/>
-                            <Comments channel={channel} />
+                            <Highscores />
                         </Stack>
                     </HStack>
                 </Stack> : <NoChannels onReloadPressed={async () => {
