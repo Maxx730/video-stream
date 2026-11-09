@@ -1,10 +1,17 @@
 import { useEffect, useState } from 'react';
-import { Stack, HStack, Text, Box } from '@chakra-ui/react';
-import '../css/Comments.css';
+import { Stack, Text, Box } from '@chakra-ui/react';
+import '../css/Highscores.css';
 
-const SCORE_COUNT = 10;
+const SCORE_COUNT = 3;
 const REFRESH_TIME = 60000;
 const EMPTY = '-';
+const SPARKLES = [
+    { left: '6%', top: '4%', animationDelay: '0s' },
+    { left: '82%', top: '10%', animationDelay: '0.7s' },
+    { left: '18%', top: '46%', animationDelay: '1.3s' },
+    { left: '74%', top: '58%', animationDelay: '0.35s' },
+    { left: '46%', top: '30%', animationDelay: '1.7s' },
+];
 
 export interface Highscore {
     name: string,
@@ -38,13 +45,18 @@ export const Highscores = () => {
     return (
         <Stack gap={2}>
             <Text fontSize="sm" fontWeight="semibold" textAlign="center">Naval Blitz Highscores</Text>
-            <Box className="comments-list">
+            <Box className="podium">
                 {padScores(scores).map((entry, i) => (
-                    <HStack key={i} gap={3} paddingX={2} data-testid="highscore-row">
-                        <Text fontSize="sm" color="fg.subtle" width={6}>{i + 1}.</Text>
-                        <Text fontSize="sm" fontWeight="bold" flex={1} truncate>{entry?.name || EMPTY}</Text>
-                        <Text fontSize="sm" fontFamily="mono">{entry?.score ?? EMPTY}</Text>
-                    </HStack>
+                    <Box key={i} className={`podium-place place-${i + 1}`} data-testid="highscore-row">
+                        <Text fontSize="sm" fontWeight="bold" textAlign="center" width="100%" truncate>{entry?.name || EMPTY}</Text>
+                        <Text fontSize="sm" fontFamily="mono" textAlign="center">{entry?.score ?? EMPTY}</Text>
+                        <Box className="podium-pedestal">
+                            <span className="podium-rank">{i + 1}</span>
+                        </Box>
+                        {entry && SPARKLES.map((style, s) => (
+                            <span key={s} className="sparkle" style={style} aria-hidden="true" />
+                        ))}
+                    </Box>
                 ))}
             </Box>
         </Stack>

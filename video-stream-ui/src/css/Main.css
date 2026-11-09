@@ -1,6 +1,7 @@
 #root {
     display: block;
     flex-grow: 1;
+    min-width: 0;
     justify-content: center;
     align-items: center;
     justify-items: center;

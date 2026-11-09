@@ -23,6 +23,10 @@ export const useIsMobile = (query = "(max-width: 768px)") => {
 }
 
 export const buildRequestURL = (po: string) => {
+    // The Vite dev server proxies these requests to prod (see vite.config.ts)
+    if (import.meta.env.MODE === 'prod-backend') {
+        return window.location.origin;
+    }
     const isLocal = window.location.host.indexOf('localhost') > -1;
     const protocol = isLocal ? 'http://' : 'https://';
     const port = isLocal ? `:${po}` : '';

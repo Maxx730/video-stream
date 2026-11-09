@@ -136,8 +136,8 @@ export function Login ({ setScreen }: LoginProps) {
     }, []);
 
     return (
-        <Center minH="100vh">
-            <Card.Root width={360}>
+        <Center minH="100vh" paddingX={4}>
+            <Card.Root width="100%" maxW={360}>
                 {loading ? renderLoading() : renderLogin()}
             </Card.Root>
         </Center>

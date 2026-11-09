@@ -1,4 +1,4 @@
-import { Stack, Text, Spinner, HStack, Box, Center } from "@chakra-ui/react";
+import { Stack, Text, Spinner, Box, Center } from "@chakra-ui/react";
 import { useContext, useState, useEffect, useRef } from "react";
 
 // TYPES
@@ -89,12 +89,12 @@ export const Main = () => {
         <div>
             {
                 (channels.length > 0 && !loading) ? 
-                <Stack padding={12}>
-                    <HStack gap={6} align="flex-start">
-                        <Stack gap={12}>
+                <Stack padding={{ base: 4, lg: 12 }}>
+                    <Stack direction={{ base: 'column', lg: 'row' }} gap={6} align={{ base: 'stretch', lg: 'flex-start' }}>
+                        <Stack gap={12} width="100%" minW={0}>
                             <MediaPlayer url={`https://video.clam-tube.com/stream/${channel}.m3u8`} title={channel}/>
                         </Stack>
-                        <Stack alignSelf={'flex-start'} gap={4}>
+                        <Stack width={{ base: '100%', lg: '320px' }} flexShrink={0} gap={4}>
                             <SideContainer logout={auth ? logout : undefined} totalCount={viewers.length} contents={
                                 <ChannelList onChannelSelected={async (key) => {
                                     await watch(key);
@@ -103,7 +103,7 @@ export const Main = () => {
                             }/>
                             <Highscores />
                         </Stack>
-                    </HStack>
+                    </Stack>
                 </Stack> : <NoChannels onReloadPressed={async () => {
                     const channels = await getChannels(false, auth ? auth.token : null, import.meta.env.DEV) as Channel[];
                     setChannels(channels);

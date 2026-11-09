@@ -27,7 +27,7 @@ export const SideContainer = ({ contents, logout, totalCount = 0 }: SideContaine
         );
     }
     return (
-        <Box width={320}>
+        <Box width="100%">
             <Stack gap={2}>
                 <Stack>
                     <HStack height={10}>
