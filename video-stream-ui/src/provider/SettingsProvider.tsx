@@ -1,8 +1,8 @@
 import { createContext, useState, useEffect } from "react";
-import Cookies from "js-cookie";
 
 export interface Settings {
-    darkMode: boolean
+    darkMode: boolean,
+    holidayLights: boolean
 }
 
 export interface SettingsContextInterface {
@@ -12,9 +12,10 @@ export interface SettingsContextInterface {
 }
 
 const DefaultSettings = {
-    darkMode: false
+    darkMode: false,
+    holidayLights: false
 }
-const SETTINGS_COOKIE = 'ctSettings';
+const SETTINGS_KEY = 'ctSettings';
 
 export const SettingsContext = createContext<any>(DefaultSettings);
 
@@ -28,6 +29,8 @@ export const SettingsProvider: React.FC<{
         switch(name) {
             case 'darkMode':
                 return clonedSettings.darkMode;
+            case 'holidayLights':
+                return clonedSettings.holidayLights;
             default:
                 return false;
         }
@@ -39,25 +42,36 @@ export const SettingsProvider: React.FC<{
             case 'darkMode':
                 clonedSettings.darkMode = value
                 break;
+            case 'holidayLights':
+                clonedSettings.holidayLights = value
+                break;
         }
         setSettings(clonedSettings);
         writeSettings(clonedSettings);
     }
 
     const writeSettings = (settings: Settings) => {
-        Cookies.set(SETTINGS_COOKIE, JSON.stringify(settings));
+        try {
+            localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+        } catch {
+            // storage is blocked or full, so settings only last for this visit
+        }
     }
 
     const readSettings = () => {
-        return Cookies.get(SETTINGS_COOKIE);
+        try {
+            return localStorage.getItem(SETTINGS_KEY);
+        } catch {
+            return null;
+        }
     }
 
     useEffect(() => {
         const savedSettings = readSettings();
         if (savedSettings) {
             try {
-                const parsed = JSON.parse(savedSettings) as Settings;
-                setSettings(parsed);
+                const parsed = JSON.parse(savedSettings) as Partial<Settings>;
+                setSettings({ ...DefaultSettings, ...parsed });
             } catch(err) {
                 setSettings(DefaultSettings);
             }

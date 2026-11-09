@@ -22,6 +22,24 @@ describe('ChannelList', () => {
         expect(screen.getByText('Channels')).toBeInTheDocument();
     });
 
+    it('draws four strands of holiday lights hidden from screen readers', () => {
+        const { container } = renderWithChakra(
+            <ChannelList channels={[]} onChannelSelected={() => {}} getChannelCount={() => 0} />,
+            { settings: { holidayLights: true } }
+        );
+        const lights = container.querySelector('svg.holiday-lights');
+        expect(lights).toHaveAttribute('aria-hidden', 'true');
+        expect(lights?.querySelectorAll('.holiday-bulbs')).toHaveLength(4);
+    });
+
+    it('has no holiday lights or their padding by default', () => {
+        const { container } = renderWithChakra(
+            <ChannelList channels={[]} onChannelSelected={() => {}} getChannelCount={() => 0} />
+        );
+        expect(container.querySelector('svg.holiday-lights')).toBeNull();
+        expect(container.querySelector('.holiday-frame')).toBeNull();
+    });
+
     it('renders a row for each channel', () => {
         const channels = [
             makeChannel({ key: 'stream_one' }),

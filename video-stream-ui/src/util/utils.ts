@@ -24,7 +24,7 @@ export const useIsMobile = (query = "(max-width: 768px)") => {
 
 export const buildRequestURL = (po: string) => {
     // The Vite dev server proxies these requests to prod (see vite.config.ts)
-    if (import.meta.env.MODE === 'prod-backend') {
+    if (['prod-backend', 'prod-local-auth'].includes(import.meta.env.MODE)) {
         return window.location.origin;
     }
     const isLocal = window.location.host.indexOf('localhost') > -1;
@@ -33,3 +33,5 @@ export const buildRequestURL = (po: string) => {
     const host = window.location.hostname;
     return `${protocol}${host}${port}`;
 }
+
+export const buildChatSocketURL = () => `${buildRequestURL('2280').replace(/^http/, 'ws')}/chat/ws`;

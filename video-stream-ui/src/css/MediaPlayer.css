@@ -3,10 +3,13 @@
     overflow: hidden;
     border-radius: 12px;
     background-color: black;
+    aspect-ratio: 16 / 9;
 }
 
+/* Out of flow so a loading or differently shaped stream can't resize the frame. */
 .player-element {
-    aspect-ratio: 16 / 9;
+    position: absolute;
+    inset: 0;
 }
 
 .player-overlay {

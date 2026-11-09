@@ -68,6 +68,25 @@ services:
       postgres:
         condition: service_healthy
 
+  chat:
+    build: ./video-stream-chat
+    container_name: chat
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:2280:2280"
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_USER: auth
+      POSTGRES_PASSWORD: authpass
+      POSTGRES_DB: authdb
+      POSTGRES_PORT: 5432
+      AUTH_URL: http://auth:2278
+    depends_on:
+      postgres:
+        condition: service_healthy
+      auth:
+        condition: service_started
+
   rtmp:
     build: ./video-stream-rtmp
     container_name: rtmp

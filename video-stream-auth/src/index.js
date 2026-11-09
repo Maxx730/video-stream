@@ -37,6 +37,9 @@ const DB_CONFIG = {
   database: process.env.POSTGRES_DB || "authdb",
 };
 
+const DISPLAY_NAME_PATTERN = /^[A-Za-z0-9_-]{3,20}$/;
+const DISPLAY_NAME_INDEX = "users_display_name_lower_idx";
+
 const pool = new Pool(DB_CONFIG);
 
 pool.on("error", (err) => {
@@ -53,10 +56,19 @@ async function ensureSchema() {
       created_at TIMESTAMPTZ DEFAULT now()
     )
   `);
+  // Nullable because accounts created before display names don't have one.
+  await pool.query("ALTER TABLE users ADD COLUMN IF NOT EXISTS display_name TEXT");
+  await pool.query(
+    `CREATE UNIQUE INDEX IF NOT EXISTS ${DISPLAY_NAME_INDEX} ON users (lower(display_name))`
+  );
 }
 
 function normalizeEmail(email) {
   return (email || "").trim().toLowerCase();
+}
+
+function normalizeDisplayName(displayName) {
+  return typeof displayName === "string" ? displayName.trim() : "";
 }
 
 function authMiddleware(req, res, next) {
@@ -81,7 +93,7 @@ function authMiddleware(req, res, next) {
 
 function generateJWT(user) {
   const token = jwt.sign(
-    { id: user.id, email: user.email },
+    { id: user.id, email: user.email, displayName: user.display_name || `User-${user.id}` },
     JWT_SECRET,
     { expiresIn: "24h" }
   );
@@ -91,9 +103,13 @@ function generateJWT(user) {
 app.post("/register", async (req, res) => {
   const email = normalizeEmail(req.body.email);
   const password = req.body.password;
+  const displayName = normalizeDisplayName(req.body.displayName);
 
   if (!email || !password || password.length < 6) {
     return res.status(400).json({ error: "Email and password (min 6 chars) are required" });
+  }
+  if (!DISPLAY_NAME_PATTERN.test(displayName)) {
+    return res.status(400).json({ error: "Display name must be 3-20 letters, numbers, _ or -" });
   }
 
   try {
@@ -104,12 +120,16 @@ app.post("/register", async (req, res) => {
 
     const passwordHash = await bcrypt.hash(password, 10);
     await pool.query(
-      "INSERT INTO users (email, password_hash) VALUES ($1, $2)",
-      [email, passwordHash]
+      "INSERT INTO users (email, password_hash, display_name) VALUES ($1, $2, $3)",
+      [email, passwordHash, displayName]
     );
 
     return res.status(201).json({ message: "User registered" });
   } catch (err) {
+    if (err.code === "23505") {
+      const error = err.constraint === DISPLAY_NAME_INDEX ? "Display name already taken" : "User already exists";
+      return res.status(409).json({ error });
+    }
     console.error("Register error", err);
     return res.status(500).json({ error: "Internal server error" });
   }
@@ -121,7 +141,7 @@ app.post(["/login", "/account/login"], async (req, res) => {
 
   try {
     const userResult = await pool.query(
-      "SELECT id, email, password_hash FROM users WHERE email = $1",
+      "SELECT id, email, password_hash, display_name FROM users WHERE email = $1",
       [email]
     );
 

@@ -90,12 +90,12 @@ export const AuthProvider: React.FC<{
         };
     }
 
-    const register = async (email: string, password: string) => {
+    const register = async (email: string, password: string, displayName: string) => {
         const authHostUrl = buildRequestURL('2278');
         const response = await fetch(`${authHostUrl}/account/register/`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
+            body: JSON.stringify({ email, password, displayName })
         });
         const data = await response.json();
         return { status: response.status, ...data };

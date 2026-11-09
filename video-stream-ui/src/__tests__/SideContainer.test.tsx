@@ -28,6 +28,13 @@ describe('SideContainer', () => {
         expect(logout).toHaveBeenCalledTimes(1);
     });
 
+    it('shows the Settings button', () => {
+        renderWithChakra(
+            <SideContainer contents={<div />} logout={undefined} updating={false} totalCount={0} />
+        );
+        expect(screen.getByRole('button', { name: 'Settings' })).toBeInTheDocument();
+    });
+
     it('displays the total viewer count', () => {
         renderWithChakra(
             <SideContainer contents={<div />} logout={undefined} updating={false} totalCount={7} />

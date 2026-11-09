@@ -4,6 +4,8 @@ import { serverContextInstance } from '@/provider/ServerProvider';
 import { Table, IconButton, Tag, Text } from '@chakra-ui/react';
 import type { Channel, Viewer } from '@/provider/ServerProvider';
 import { FaEye, FaCircleCheck } from "react-icons/fa6";
+import { HolidayLights } from '@/components/HolidayLights';
+import { SettingsContext } from '@/provider/SettingsProvider';
 
 interface ChannelListProps {
     channels: Array<Channel>,
@@ -13,8 +15,10 @@ interface ChannelListProps {
 }
 
 export const ChannelList = ({ onChannelSelected, getChannelCount, channels, activeChannel }: ChannelListProps) => {
+    const { getBoolValue } = useContext(SettingsContext);
+    const lightsOn = getBoolValue('holidayLights');
     return (
-        <div className="channel-list-frame">
+        <div className={`channel-list-frame${lightsOn ? ' holiday-frame' : ''}`}>
             <Table.ScrollArea borderWidth="1px" rounded="md">
                 <Table.Root stickyHeader={true} key={"outline"} size="sm" variant={"outline"}>
                     <Table.Header>
@@ -55,6 +59,7 @@ export const ChannelList = ({ onChannelSelected, getChannelCount, channels, acti
                     </Table.Body>
                 </Table.Root>
             </Table.ScrollArea>
+            {lightsOn && <HolidayLights />}
         </div>
     )
 }

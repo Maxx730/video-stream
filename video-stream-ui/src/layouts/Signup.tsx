@@ -3,6 +3,8 @@ import { PasswordInput } from "@/components/ui/password-input";
 import { useState, useContext, useEffect } from 'react';
 import { AuthContext } from "@/provider/AuthProvider";
 
+const DISPLAY_NAME_PATTERN = /^[A-Za-z0-9_-]{3,20}$/;
+
 export interface SignupProps {
     setScreen: Function
 }
@@ -12,6 +14,7 @@ export function Signup({ setScreen }: SignupProps) {
 
     const [loading, setLoading] = useState(true);
     const [email, setEmail] = useState('');
+    const [displayName, setDisplayName] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState<{ message: string } | null>(null);
@@ -29,6 +32,10 @@ export function Signup({ setScreen }: SignupProps) {
 
     const handleRegister = async () => {
         setError(null);
+        if (!DISPLAY_NAME_PATTERN.test(displayName.trim())) {
+            setError({ message: 'Display name must be 3-20 letters, numbers, _ or -' });
+            return;
+        }
         if (password !== confirmPassword) {
             setError({ message: 'Passwords do not match' });
             return;
@@ -38,7 +45,7 @@ export function Signup({ setScreen }: SignupProps) {
             return;
         }
         setLoading(true);
-        const response = await register(email, password);
+        const response = await register(email, password, displayName.trim());
         if (response?.status === 201) {
             setSuccess(true);
             await new Promise(resolve => setTimeout(resolve, 1500));
@@ -83,6 +90,13 @@ export function Signup({ setScreen }: SignupProps) {
                                 Email <Field.RequiredIndicator />
                             </Field.Label>
                             <Input value={email} onChange={e => setEmail(e.target.value)} />
+                        </Field.Root>
+                        <Field.Root required>
+                            <Field.Label>
+                                Display Name <Field.RequiredIndicator />
+                            </Field.Label>
+                            <Input value={displayName} maxLength={20} onChange={e => setDisplayName(e.target.value)} />
+                            <Field.HelperText>Shown in chat. 3-20 letters, numbers, _ or -.</Field.HelperText>
                         </Field.Root>
                         <Field.Root required>
                             <Field.Label>

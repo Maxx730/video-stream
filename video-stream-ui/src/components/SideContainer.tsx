@@ -1,6 +1,7 @@
 import { Box, Button, Tag, Stack, HStack, Switch } from "@chakra-ui/react"
 import { MdExitToApp, MdLogin } from "react-icons/md";
 import { SettingsContext } from "@/provider/SettingsProvider";
+import { SettingsDialog } from "@/components/SettingsDialog";
 import { useContext } from "react";
 
 
@@ -38,6 +39,7 @@ export const SideContainer = ({ contents, logout, totalCount = 0 }: SideContaine
                         </Tag.Root>
                         <Box flex={1}/>
                         {renderLoginLogout()}
+                        <SettingsDialog />
                     </HStack>                    
                 </Stack>
                 {contents}

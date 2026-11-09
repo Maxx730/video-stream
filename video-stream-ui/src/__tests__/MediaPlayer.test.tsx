@@ -19,6 +19,24 @@ describe('MediaPlayer', () => {
         expect(player.props.volume).toBe(1);
     });
 
+    it('fills the frame so stream changes cannot resize it', () => {
+        renderWithChakra(<MediaPlayer url="https://example.com/a.m3u8" />);
+        expect(player.props.width).toBe('100%');
+        expect(player.props.height).toBe('100%');
+    });
+
+    it('draws holiday lights outside the frame that clips the video', () => {
+        const { container } = renderWithChakra(<MediaPlayer url="https://example.com/a.m3u8" />, { settings: { holidayLights: true } });
+        expect(container.querySelector('svg.holiday-lights')).toBeInTheDocument();
+        expect(container.querySelector('.player-frame svg.holiday-lights')).toBeNull();
+    });
+
+    it('has no holiday lights or their padding by default', () => {
+        const { container } = renderWithChakra(<MediaPlayer url="https://example.com/a.m3u8" />);
+        expect(container.querySelector('svg.holiday-lights')).toBeNull();
+        expect(container.querySelector('.holiday-frame')).toBeNull();
+    });
+
     it('keeps the mute and volume the viewer chose when it re-renders', () => {
         renderWithChakra(<MediaPlayer url="https://example.com/a.m3u8" />);
         act(() => {

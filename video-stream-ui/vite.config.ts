@@ -23,13 +23,14 @@ const prodProxy: ProxyOptions = {
 }
 
 // Keeps a local session from changing prod: the viewer list, comments and accounts.
-const prodReadOnly = (): Plugin => ({
+const prodReadOnly = (localAuth: boolean): Plugin => ({
   name: 'prod-read-only',
   configureServer(server) {
     server.middlewares.use(async (req, res, next) => {
       const path = (req.url ?? '').split('?')[0].replace(/\/$/, '')
       const isApiPath = PROD_API_PATHS.some((p) => path === p || path.startsWith(`${p}/`))
-      if (!isApiPath || ['GET', 'HEAD', 'OPTIONS'].includes(req.method ?? '') || path === '/account/login') {
+      const isAllowedAccountWrite = path === '/account/login' || (localAuth && path.startsWith('/account/'))
+      if (!isApiPath || ['GET', 'HEAD', 'OPTIONS'].includes(req.method ?? '') || isAllowedAccountWrite) {
         next()
         return
       }
@@ -50,9 +51,10 @@ const prodReadOnly = (): Plugin => ({
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
-  const useProdBackend = mode === 'prod-backend'
+  const useLocalAuth = mode === 'prod-local-auth'
+  const useProdBackend = mode === 'prod-backend' || useLocalAuth
   return {
-    plugins: [react(), tsconfigPaths(), ...(useProdBackend ? [prodReadOnly()] : [])],
+    plugins: [react(), tsconfigPaths(), ...(useProdBackend ? [prodReadOnly(useLocalAuth)] : [])],
     server: {
       proxy: {
         // Mirrors the /highscores/ location in nginx.conf
@@ -63,6 +65,19 @@ export default defineConfig(({ mode }) => {
         },
         ...(useProdBackend
           ? Object.fromEntries(PROD_API_PATHS.map((path) => [path, prodProxy]))
+          : {}),
+        // Mirrors the /account/ locations in nginx.conf, against the docker compose auth service
+        ...(useLocalAuth
+          ? {
+              '/account': {
+                target: 'http://127.0.0.1:2278',
+                rewrite: (path: string) => path.replace(/^\/account/, ''),
+              },
+              '/chat': {
+                target: 'http://127.0.0.1:2280',
+                ws: true,
+              },
+            }
           : {}),
       },
     },

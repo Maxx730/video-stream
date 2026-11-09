@@ -1,7 +1,9 @@
 import ReactPlayer from 'react-player'
 import '../css/MediaPlayer.css';
 import { getSizeValue } from '@/util/values';
-import { useEffect, useState } from 'react';
+import { HolidayLights } from '@/components/HolidayLights';
+import { SettingsContext } from '@/provider/SettingsProvider';
+import { useContext, useEffect, useState } from 'react';
 import type { SyntheticEvent } from 'react';
 import { Flex, IconButton, Slider, Spinner } from '@chakra-ui/react';
 import { Tooltip } from "@/components/ui/tooltip"
@@ -18,8 +20,11 @@ export interface PlayerProps {
 }
 
 const STREAM_SWITCH_DELAY = 500;
+const LIGHTS_PADDING = 14; // matches .holiday-frame, keeps the video at its full size
 
 export const MediaPlayer = ({ url, title, effect = 'NONE', size = 'Normal', playing = true }: PlayerProps) => {
+    const { getBoolValue } = useContext(SettingsContext);
+    const lightsOn = getBoolValue('holidayLights');
     const [ready, setReady] = useState(false);
     const [hasLoaded, setHasLoaded] = useState(false);
     const [activeUrl, setActiveUrl] = useState<string | undefined>(undefined);
@@ -42,11 +47,8 @@ export const MediaPlayer = ({ url, title, effect = 'NONE', size = 'Normal', play
     }, [url]);
 
     return (
-        <div>
-            <div className="player-frame" style={{
-                width: '100%',
-                maxWidth: getSizeValue(size)
-            }}>
+        <div className={lightsOn ? 'holiday-frame' : undefined} style={{ maxWidth: getSizeValue(size, lightsOn ? LIGHTS_PADDING * 2 : 0) }}>
+            <div className="player-frame" style={{ width: '100%' }}>
                 {title && <div className="player-title">{title}</div>}
                 <div className="player-overlay" style={{ opacity: (!ready && hasLoaded) ? 1 : 0 }}>
                     {!ready && hasLoaded && (
@@ -58,7 +60,7 @@ export const MediaPlayer = ({ url, title, effect = 'NONE', size = 'Normal', play
                 <ReactPlayer
                     className='player-element'
                     controls={true}
-                    height={'auto'}
+                    height={'100%'}
                     width={'100%'}
                     src={activeUrl}
                     playing={true}
@@ -71,6 +73,7 @@ export const MediaPlayer = ({ url, title, effect = 'NONE', size = 'Normal', play
                     }, 10)}
                 />
             </div>
+            {lightsOn && <HolidayLights />}
         </div>
     );
 }

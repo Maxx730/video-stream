@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "dev:prod": "vite --mode prod-backend",
+    "dev:prod-auth": "vite --mode prod-local-auth",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",

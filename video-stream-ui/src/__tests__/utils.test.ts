@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { isDev, buildRequestURL } from '@/util/utils';
+import { isDev, buildRequestURL, buildChatSocketURL } from '@/util/utils';
 
 afterEach(() => {
     vi.unstubAllGlobals();
@@ -14,6 +14,18 @@ describe('isDev', () => {
     it('returns false when origin contains live.clam-tube', () => {
         vi.stubGlobal('location', { ...window.location, origin: 'https://live.clam-tube.com' });
         expect(isDev()).toBe(false);
+    });
+});
+
+describe('buildChatSocketURL', () => {
+    it('uses ws and the chat port on localhost', () => {
+        vi.stubGlobal('location', { ...window.location, host: 'localhost:3000', hostname: 'localhost' });
+        expect(buildChatSocketURL()).toBe('ws://localhost:2280/chat/ws');
+    });
+
+    it('uses wss without a port on a production domain', () => {
+        vi.stubGlobal('location', { ...window.location, host: 'video.clam-tube.com', hostname: 'video.clam-tube.com' });
+        expect(buildChatSocketURL()).toBe('wss://video.clam-tube.com/chat/ws');
     });
 });
 

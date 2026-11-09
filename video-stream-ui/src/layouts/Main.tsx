@@ -15,6 +15,7 @@ import { MediaPlayer } from '../components/MediaPlayer';
 import { ChannelList } from "@/components/ChannelList";
 import { SideContainer } from "@/components/SideContainer";
 import { Highscores } from "@/components/Highscores";
+import { ChatBox } from "@/components/ChatBox";
 import { NoChannels } from "@/components/NoChannels";
 import { MarqueeMessage } from "@/components/MarqueeMessage";
 
@@ -101,6 +102,7 @@ export const Main = () => {
                                     setChannel(key);
                                 }} channels={channels} getChannelCount={getChannelCount} activeChannel={channel}/>
                             }/>
+                            {auth && <ChatBox token={auth.token} channel={channel} />}
                             <Highscores />
                         </Stack>
                     </Stack>

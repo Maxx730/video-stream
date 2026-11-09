@@ -1,0 +1,65 @@
+.holiday-frame {
+    position: relative;
+    padding: 14px;
+}
+
+.holiday-lights {
+    position: absolute;
+    inset: 6px;
+    width: calc(100% - 12px);
+    height: calc(100% - 12px);
+    overflow: visible;
+    pointer-events: none;
+}
+
+.holiday-wire {
+    fill: none;
+    stroke: #2f5d3a;
+    stroke-width: 1.5;
+}
+
+/* A zero-length dash with round caps draws evenly spaced dots at any size. */
+.holiday-bulbs {
+    fill: none;
+    stroke-width: 8;
+    stroke-linecap: round;
+    stroke-dasharray: 0 56;
+    animation: holiday-chase 1.6s steps(1) infinite;
+}
+
+.holiday-bulbs.red {
+    stroke: #ff3b3b;
+    filter: drop-shadow(0 0 4px #ff3b3b);
+}
+
+.holiday-bulbs.gold {
+    stroke: #ffd23f;
+    filter: drop-shadow(0 0 4px #ffd23f);
+    stroke-dashoffset: -14;
+    animation-delay: -0.4s;
+}
+
+.holiday-bulbs.green {
+    stroke: #35d46a;
+    filter: drop-shadow(0 0 4px #35d46a);
+    stroke-dashoffset: -28;
+    animation-delay: -0.8s;
+}
+
+.holiday-bulbs.blue {
+    stroke: #3fa7ff;
+    filter: drop-shadow(0 0 4px #3fa7ff);
+    stroke-dashoffset: -42;
+    animation-delay: -1.2s;
+}
+
+@keyframes holiday-chase {
+    0% { opacity: 1; }
+    50%, 100% { opacity: 0.25; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .holiday-bulbs {
+        animation: none;
+    }
+}
