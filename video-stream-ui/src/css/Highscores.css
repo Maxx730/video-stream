@@ -1,0 +1,105 @@
+.podium {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
+}
+
+.podium-place {
+    position: relative;
+    display: flex;
+    flex: 1 1 0;
+    flex-direction: column;
+    align-items: center;
+    min-width: 0;
+}
+
+/* The DOM stays in rank order; this puts 1st in the middle. */
+.podium-place.place-1 { order: 2; }
+.podium-place.place-2 { order: 1; }
+.podium-place.place-3 { order: 3; }
+
+.podium-pedestal {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    width: 100%;
+    margin-top: 4px;
+    padding-top: 6px;
+    border-radius: 6px 6px 0 0;
+    overflow: hidden;
+}
+
+.place-1 .podium-pedestal {
+    height: 96px;
+    background: linear-gradient(180deg, #ffe27a, #d9a520);
+}
+
+.place-2 .podium-pedestal {
+    height: 72px;
+    background: linear-gradient(180deg, #eef1f5, #a3acb8);
+}
+
+.place-3 .podium-pedestal {
+    height: 56px;
+    background: linear-gradient(180deg, #eab98a, #b0703a);
+}
+
+.podium-rank {
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 1;
+    color: rgba(30, 20, 0, 0.7);
+}
+
+.place-1 .podium-pedestal::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.65) 50%, transparent 65%);
+    transform: translateX(-100%);
+    animation: podium-shimmer 3.5s ease-in-out infinite;
+}
+
+.sparkle {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: #fff6c2;
+    clip-path: polygon(50% 0, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0 50%, 40% 40%);
+    filter: drop-shadow(0 0 3px #ffd84d);
+    pointer-events: none;
+    opacity: 0;
+    animation: sparkle 2.2s ease-in-out infinite;
+}
+
+@keyframes sparkle {
+    0%, 100% {
+        opacity: 0;
+        transform: scale(0.2) rotate(0deg);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.1) rotate(90deg);
+    }
+}
+
+@keyframes podium-shimmer {
+    0% { transform: translateX(-100%); }
+    60%, 100% { transform: translateX(100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sparkle {
+        display: none;
+        animation: none;
+    }
+
+    .place-1 .podium-pedestal::after {
+        display: none;
+        animation: none;
+    }
+}

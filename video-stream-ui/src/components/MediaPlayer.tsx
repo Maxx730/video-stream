@@ -2,6 +2,7 @@ import ReactPlayer from 'react-player'
 import '../css/MediaPlayer.css';
 import { getSizeValue } from '@/util/values';
 import { useEffect, useState } from 'react';
+import type { SyntheticEvent } from 'react';
 import { Flex, IconButton, Slider, Spinner } from '@chakra-ui/react';
 import { Tooltip } from "@/components/ui/tooltip"
 import { FaPause, FaPlay, FaVolumeHigh, FaVolumeXmark } from 'react-icons/fa6';
@@ -13,16 +14,24 @@ export interface PlayerProps {
     title?: string,
     effect?: string,
     size?: string,
-    playing?: boolean,
-    isMobile?: boolean
+    playing?: boolean
 }
 
 const STREAM_SWITCH_DELAY = 500;
 
-export const MediaPlayer = ({ url, title, effect = 'NONE', size = 'Normal', playing = true, isMobile = false }: PlayerProps) => {
+export const MediaPlayer = ({ url, title, effect = 'NONE', size = 'Normal', playing = true }: PlayerProps) => {
     const [ready, setReady] = useState(false);
     const [hasLoaded, setHasLoaded] = useState(false);
     const [activeUrl, setActiveUrl] = useState<string | undefined>(undefined);
+    // react-player re-applies muted and volume on every render, so they have to
+    // track what the viewer chose or each re-render resets them.
+    const [muted, setMuted] = useState(false);
+    const [volume, setVolume] = useState(1);
+
+    const handleVolumeChange = (event: SyntheticEvent<HTMLVideoElement>) => {
+        setMuted(event.currentTarget.muted);
+        setVolume(event.currentTarget.volume);
+    };
 
     useEffect(() => {
         setReady(false);
@@ -35,7 +44,8 @@ export const MediaPlayer = ({ url, title, effect = 'NONE', size = 'Normal', play
     return (
         <div>
             <div className="player-frame" style={{
-                width: isMobile ? '100%' : getSizeValue(size)
+                width: '100%',
+                maxWidth: getSizeValue(size)
             }}>
                 {title && <div className="player-title">{title}</div>}
                 <div className="player-overlay" style={{ opacity: (!ready && hasLoaded) ? 1 : 0 }}>
@@ -49,9 +59,12 @@ export const MediaPlayer = ({ url, title, effect = 'NONE', size = 'Normal', play
                     className='player-element'
                     controls={true}
                     height={'auto'}
-                    width={getSizeValue(size)}
+                    width={'100%'}
                     src={activeUrl}
                     playing={true}
+                    muted={muted}
+                    volume={volume}
+                    onVolumeChange={handleVolumeChange}
                     onReady={() => setTimeout(() => {
                         setReady(true);
                         setHasLoaded(true);
